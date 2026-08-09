@@ -5,7 +5,7 @@ CLI and import stay **`focus`**.
 
 ```bash
 pip install focus-hud
-focus version   # → 0.5.0
+focus version   # → 0.5.1
 ```
 
 ## One-time: Trusted Publishing
@@ -35,8 +35,8 @@ is project URLs / GitHub owner claims — not `pip install focus-hud`.
 ## Release
 
 ```bash
-git tag v0.5.0
-git push origin v0.5.0
+git tag v0.5.1
+git push origin v0.5.1
 ```
 
 That runs [`.github/workflows/publish.yml`](../.github/workflows/publish.yml), which does two things on a `v*` tag:

@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Focus — Project status (memory / handoff)
 
-**Last updated:** 2026-08-08 (night) — **Released:** PyPI `focus-hud` **0.5.0** + Marketplace **Focus HUD** `jovianebellegarde.focus-hud` **0.6.0**. Phase 5 (#41) + Phase 6 (#42) on main.  
+**Last updated:** 2026-08-08 (night) — **Released:** PyPI `focus-hud` **0.5.1** (metadata URLs) + Marketplace **Focus HUD** `jovianebellegarde.focus-hud` **0.6.0**. Phase 5 (#41) + Phase 6 (#42) on main.  
 **Product:** Focus — evidence-only blast-radius HUD. PyPI `focus-hud`, CLI `focus`, IDE `extensions/vscode-focus`.
 
 **Read this first in a new chat.** Update this file when pausing or before switching windows.
@@ -18,16 +18,15 @@ alwaysApply: true
 |---|---|
 | **Checked-out branch** | `main` |
 | **Open PRs** | **None** |
-| **PyPI** | **`focus-hud` 0.5.0** live |
-| **GitHub Releases** | **`focus-hud 0.5.0` = Latest** |
+| **PyPI** | **`focus-hud` 0.5.1** live |
+| **GitHub Releases** | **`focus-hud 0.5.1` = Latest** |
 | **Extension** | **0.6.0** — Marketplace **Focus HUD** (`jovianebellegarde.focus-hud`) |
-| **Phase 5 / 6** | **Shipped** on PyPI 0.5.0 |
+| **Phase 5 / 6** | **Shipped** on PyPI 0.5.0+ |
 | **GitHub / Marketplace owner** | **`jovianebellegarde`** |
 
 ### Optional follow-ups
 
-1. Tiny **0.5.1** if we want PyPI project URLs to show `jovianebellegarde` (0.5.0 wheel was tagged before the rename commit)
-2. Parked Explore: dynamic-import hints; per-file PR headers; check-run annotations
+1. Parked Explore: dynamic-import hints; per-file PR headers; check-run annotations
 
 ### Standing
 

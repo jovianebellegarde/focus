@@ -3,14 +3,15 @@
 Living document for project progress. Updated as phases complete.
 
 **Last updated:** August 2026  
-**Current phase:** Phase **5 + 6 thin shipped** on PyPI **`focus-hud` 0.5.0** (inline PR review comments; `[domains]` summary clause; Mermaid role colors). Phase **4b core complete**. Check-run annotations / per-file headers remain Explore / deferred.
+**Current phase:** Phase **5 + 6 thin shipped** on PyPI **`focus-hud` 0.5.1** (features from 0.5.0; metadata URLs → `jovianebellegarde`). Phase **4b core complete**. Check-run annotations / per-file headers remain Explore / deferred.
 
-**Shipped to PyPI in `focus-hud` 0.5.0 (extension 0.6.0):**
+**Shipped to PyPI in `focus-hud` 0.5.0+ (extension 0.6.0):**
 - **#41 (Phase 5)** — batched inline PR review comments on changed lines (`focus.ci.post_review_from_env`).
 - **#42 (Phase 6)** — `.focus.toml` `[domains]` → executive summary; Mermaid `classDef` seed/danger/downstream.
+- **0.5.1** — package project URLs point at `jovianebellegarde/focus` (0.5.0 wheel still had pre-rename links).
 - Prior on 0.4.0: #32–#39 (ledger, symbol filter, captions, why-edge, JSDoc, ROA caps).
 
-> **Honesty:** Phase 5 + 6 ship in `focus-hud` **0.5.0** (`pip install "focus-hud>=0.5.0"`). Extension **0.6.0** as **Focus HUD** on the Marketplace (`jovianebellegarde.focus-hud`).
+> **Honesty:** Prefer `pip install "focus-hud>=0.5.1"` for correct GitHub links in package metadata; features need `>=0.5.0`. Extension **0.6.0** as **Focus HUD** on the Marketplace (`jovianebellegarde.focus-hud`).
 
 ---
 
