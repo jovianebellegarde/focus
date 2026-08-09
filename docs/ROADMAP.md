@@ -10,7 +10,7 @@ Living document for project progress. Updated as phases complete.
 - **#42 (Phase 6)** — `.focus.toml` `[domains]` → executive summary; Mermaid `classDef` seed/danger/downstream.
 - Prior on 0.4.0: #32–#39 (ledger, symbol filter, captions, why-edge, JSDoc, ROA caps).
 
-> **Honesty:** Phase 5 + 6 ship in `focus-hud` **0.5.0** (`pip install "focus-hud>=0.5.0"`). Extension **0.6.0** — Marketplace publish in flight / see README.
+> **Honesty:** Phase 5 + 6 ship in `focus-hud` **0.5.0** (`pip install "focus-hud>=0.5.0"`). Extension **0.6.0** as **Focus HUD** on the Marketplace (`jovianebellegarde.focus-hud`).
 
 ---
 
@@ -147,7 +147,7 @@ LLM label pass was **removed from Phase 3** and parked (see below): Focus ships 
 | Gutter hop markers + “why this edge” | Click claim → import evidence | 🔄 gutter + showWhy; **import jump landed** (branch): file CodeLens jumps to the proving `import` line via `ImpactNode.import_evidence` |
 | Inline symbol explanations | Stacked CodeLens `↳` captions on changed defs | ✅ branch |
 | `focus explain --why` | CLI evidence trail (proven vs heuristic) per caption | ✅ branch |
-| Marketplace publish | Easy install for strangers | 🔄 publishing with 0.5.0 release |
+| Marketplace publish | Easy install for strangers | ✅ `jovianebellegarde.focus-hud` (display name Focus HUD) |
 
 ---
 

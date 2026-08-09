@@ -1,24 +1,21 @@
-Sideload this extension to see Focus **in the diff**: ℹ️ on changed **symbols**, gutter highlights, and a HUD webview.
+Focus **in the diff**: ℹ️ on changed **symbols**, gutter highlights, and a HUD webview.
 
-## Prerequisites
+## Install (Marketplace)
+
+Search **Focus HUD** (publisher `jovianebellegarde`) or install [`jovianebellegarde.focus-hud`](https://marketplace.visualstudio.com/items?itemName=jovianebellegarde.focus-hud). Pair with:
 
 ```bash
-# Prefer editable install from this repo (tracks main):
-#   ./scripts/install-extension.sh
-# Or PyPI:
 pip install "focus-hud>=0.5.0"
 focus version   # must support --format json
 ```
 
-## Install (easiest)
-
-From repo root:
+## Install (from this repo)
 
 ```bash
 ./scripts/install-extension.sh
 ```
 
-Installs editable `focus-hud` + packages extension **0.6.0**. Then **Reload Window**.
+Editable `focus-hud` + extension **0.6.0**. Then **Reload Window**.
 
 ## Develop
 

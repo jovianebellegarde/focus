@@ -190,7 +190,7 @@ flowchart TB
 | Graph | NetworkX |
 | Diagrams | Mermaid (GitHub + IDE webview) |
 | CI | Opt-in GitHub Action — PR comment (A) + inline review comments on changed lines (C, Phase 5 thin) |
-| IDE | VS Code / Cursor — CodeLens + HUD panel (C); extension **0.6.0** |
+| IDE | VS Code / Cursor — CodeLens + HUD panel (C); extension **0.6.0** ([Marketplace: Focus HUD](https://marketplace.visualstudio.com/items?itemName=jovianebellegarde.focus-hud)) |
 | LLM (opt-in) | Pack-only ℹ️ labels — never invents graph edges; off by default |
 
 ---

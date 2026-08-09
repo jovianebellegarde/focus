@@ -5,8 +5,8 @@ alwaysApply: true
 
 # Focus — Project status (memory / handoff)
 
-**Last updated:** 2026-08-08 (late) — **Release 0.5.0 in flight:** Phase 5 (#41) + Phase 6 (#42) on `main`; bumping PyPI `focus-hud` **0.5.0** + Marketplace publish of extension **0.6.0**.  
-**Product:** Focus — evidence-only blast-radius HUD. PyPI `focus-hud`, CLI `focus`, IDE `extensions/vscode-focus`. Repo: `jovianebellegarde/focus`.
+**Last updated:** 2026-08-08 (night) — **Released:** PyPI `focus-hud` **0.5.0** + Marketplace **Focus HUD** `jovianebellegarde.focus-hud` **0.6.0**. Phase 5 (#41) + Phase 6 (#42) on main.  
+**Product:** Focus — evidence-only blast-radius HUD. PyPI `focus-hud`, CLI `focus`, IDE `extensions/vscode-focus`.
 
 **Read this first in a new chat.** Update this file when pausing or before switching windows.
 
@@ -16,22 +16,22 @@ alwaysApply: true
 
 | Item | State |
 |---|---|
-| **Checked-out branch** | `main` — release 0.5.0 |
+| **Checked-out branch** | `main` |
 | **Open PRs** | **None** |
-| **PyPI** | Bumping to **`focus-hud` 0.5.0** (tag `v0.5.0` → publish.yml → PyPI + GitHub Release) |
-| **Extension** | **0.6.0** — Marketplace publish (was held) |
-| **Phase 5 / 6** | **Merged** on main (#41 / #42) |
-| **Agent teaching** | `upskilling.mdc`; Mermaid colors = `mermaid-role-colors.mdc` |
+| **PyPI** | **`focus-hud` 0.5.0** live |
+| **GitHub Releases** | **`focus-hud 0.5.0` = Latest** |
+| **Extension** | **0.6.0** — Marketplace **Focus HUD** (`jovianebellegarde.focus-hud`) |
+| **Phase 5 / 6** | **Shipped** on PyPI 0.5.0 |
+| **GitHub / Marketplace owner** | **`jovianebellegarde`** |
 
-### Do next (after release settles)
+### Optional follow-ups
 
-1. Confirm PyPI `0.5.0` + GitHub Releases Latest
-2. Confirm Marketplace listing for `jovianebellegarde.focus-hud`
-3. Parked: dynamic-import Explore; per-file headers; check-run annotations
+1. Tiny **0.5.1** if we want PyPI project URLs to show `jovianebellegarde` (0.5.0 wheel was tagged before the rename commit)
+2. Parked Explore: dynamic-import hints; per-file PR headers; check-run annotations
 
-### Standing (agent + owner)
+### Standing
 
-- Feature branch + PR unless `ALLOW_MAIN_COMMIT` (releases may use main)
-- Dogfood before commit/push; own PR Test plans; README honesty
-- Git author: `71949760+jovianebellegarde@users.noreply.github.com` (or `71949760@users.noreply.github.com`)
-- GitHub / Marketplace / PyPI Trusted Publisher owner: **`jovianebellegarde`** (not `j0viane`)
+- Feature branch + PR unless `ALLOW_MAIN_COMMIT`
+- Dogfood before commit/push; README honesty
+- Git author: `71949760+jovianebellegarde@users.noreply.github.com`
+- Mermaid colors: product + `mermaid-role-colors.mdc`
