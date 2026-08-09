@@ -251,6 +251,20 @@ LLM label pass was **removed from Phase 3** and parked (see below): Focus ships 
 
 ---
 
+## Phase 6 — Business impact framing *(idea — unscoped, NOT started)*
+
+**Intent (owner):** translate structural blast radius into *business / product implications* — e.g. "this touches the billing charge path" or "this is on the auth boundary" — so a non-architect reader understands *why the risk matters*, not just which files import which.
+
+**Hard gate before any code (do not skip):** this brushes the **LLM boundary + evidence-only rule** (`focus-engineering.mdc` §2, impact bar §14). Focus must not have a model *invent* business meaning. Any Phase 6 work needs an options table + owner sign-off first. Open design questions to resolve then:
+
+- **Where does "business meaning" come from?** Deterministic signals only (path/decorator/route/schema conventions Focus already detects — e.g. `POST /api/charge` → "payment path"), a user-supplied map (`.focus.toml` labels like `billing/** = "Revenue"`), or an opt-in pack-constrained LLM label? Free-form business prose stays **won't-build**.
+- **One home?** Likely a single line in the executive summary / Danger Zone reason — not a new surface. Must clear the impact bar (changes a real decision, silence not better).
+- **ROA:** one sharp implication, or silence. No management-dashboard / metrics drift (that's already out of scope + ethics).
+
+Status: **parked** — capture only. Revisit after Phase 5 merges and caption quality (#34 follow-up) is settled.
+
+---
+
 ## Explicitly out of scope (for now)
 
 - **Committed HUD markdown in git** (`focus-hud.md` as a tracked artifact) — use PR comment (A) + inline diff (C) instead
@@ -275,6 +289,7 @@ Full ethics list: [`docs/ETHICS.md`](ETHICS.md)
 - **GitHub inline diff (Phase 5):** thin slice shipped — batched review comments on changed lines; check-run annotations + per-file headers still parking-lot.
 - **More languages (Go / Rust / Java):** adoption breadth only — not the differentiator. Revisit when a real user is blocked without them.
 - **Auditable “why this edge”:** click from HUD claim → import evidence (line). Trust theater → trust proof. **`focus explain --why`** ships on the inline-explanations branch; IDE deep-link next.
+- **Business impact framing (Phase 6 idea):** map structural blast radius → product/business implication (payment path, auth boundary). Deterministic conventions or user-supplied labels first; LLM only pack-constrained if ever. Needs options table — see Phase 6 above.
 
 ---
 
