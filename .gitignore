@@ -37,6 +37,8 @@ focus-hud.md
 # Focus parse cache (derived AST facts — safe to delete)
 .focus-cache/
 
+# Understand-Anything local scan / graph (regenerable; keep out of git)
+.ua/
 
 # Focus path exclusions (optional)
 # .focusignore is respected at runtime; not gitignored itself
