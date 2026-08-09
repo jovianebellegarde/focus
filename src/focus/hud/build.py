@@ -9,11 +9,18 @@ from focus.hud.classify import (
     classify_impacts,
     score_risk,
 )
+from focus.hud.domains import domain_for_seeds
 from focus.hud.mermaid import render_mermaid, validate_mermaid_edges
 from focus.models import FocusHUD
 
 
-def build_hud(graph: nx.DiGraph, seed: str, rings: list[tuple[int, list[str]]]) -> FocusHUD:
+def build_hud(
+    graph: nx.DiGraph,
+    seed: str,
+    rings: list[tuple[int, list[str]]],
+    *,
+    domains: dict[str, str] | None = None,
+) -> FocusHUD:
     """Build the HUD payload for one seed file.
 
     Empty blast radius → pass-through (summary only). Non-empty → full HUD
@@ -41,12 +48,21 @@ def build_hud(graph: nx.DiGraph, seed: str, rings: list[tuple[int, list[str]]]) 
         max_hops=max_hops,
         danger_count=len(danger),
     )
-    mermaid = render_mermaid(graph, seed, rings)
+    danger_paths = {n.path for n in danger}
+    mermaid = render_mermaid(graph, seed, rings, danger_paths=danger_paths)
     invalid = validate_mermaid_edges(graph, mermaid)
     if invalid:
         raise ValueError(f"Mermaid edges not in graph: {invalid}")
 
-    summary = _summary(seed, risk, total, max_hops, danger)
+    summary = _summary(
+        seed,
+        risk,
+        total,
+        max_hops,
+        danger,
+        domains=domains or {},
+        danger_paths=danger_paths,
+    )
     return FocusHUD(
         mode="full",
         seed=seed,
@@ -66,14 +82,24 @@ def _summary(
     total: int,
     max_hops: int,
     danger: list,
+    *,
+    domains: dict[str, str],
+    danger_paths: set[str],
 ) -> str:
     file_word = "file" if total == 1 else "files"
     hop_word = "hop" if max_hops == 1 else "hops"
+    domain_label = domain_for_seeds(
+        [seed],
+        domains,
+        danger_paths=danger_paths,
+    )
+    domain_bit = f" touches **{domain_label}** —" if domain_label else ""
     danger_bit = ""
     if danger:
         names = ", ".join(f"`{n.path}`" for n in danger[:3])
         danger_bit = f" Danger Zones: {names}."
     return (
-        f"Traced `{seed}`. **{risk}** risk — {total} downstream {file_word}, "
+        f"Traced `{seed}`. **{risk}** risk —"
+        f"{domain_bit} {total} downstream {file_word}, "
         f"up to {max_hops} {hop_word} away.{danger_bit}"
     )

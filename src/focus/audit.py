@@ -17,9 +17,10 @@ from focus.hud.classify import (
     score_risk,
     shared_hub_reason,
 )
+from focus.hud.domains import domain_for_seeds
 from focus.hud.explain import ExplainContext, enrich_changed_symbols
-from focus.hud.symbol_filter import filter_rings_by_symbols
 from focus.hud.mermaid import render_mermaid, validate_mermaid_edges
+from focus.hud.symbol_filter import filter_rings_by_symbols
 from focus.ingest import changed_files, changed_source_files
 from focus.ingest.diff import DiffMode
 from focus.ingest.symbols import changed_line_ranges, changed_symbols, touches_only_non_symbols
@@ -359,16 +360,17 @@ def run_audit(
 
     return _with_line_explanations(
         _full_audit_hud(
-        graph,
-        seeds,
-        rings,
-        symbol_infos,
-        fan_out_threshold=fan_out,
-        facts_by_path=facts_by_rel,
-        overlay_texts=overlays,
-        llm_captions=use_llm,
-        llm_paths=path_filter,
-    ),
+            graph,
+            seeds,
+            rings,
+            symbol_infos,
+            fan_out_threshold=fan_out,
+            domains=config.domains,
+            facts_by_path=facts_by_rel,
+            overlay_texts=overlays,
+            llm_captions=use_llm,
+            llm_paths=path_filter,
+        ),
         line_ranges,
         facts_by_path=facts_by_rel,
         overlay_texts=overlays,
@@ -384,6 +386,7 @@ def _full_audit_hud(
     symbol_infos: list[ChangedSymbolInfo],
     *,
     fan_out_threshold: int,
+    domains: dict[str, str] | None = None,
     facts_by_path: dict[str, ModuleFacts],
     overlay_texts: dict[str, str] | None = None,
     llm_captions: bool = False,
@@ -435,7 +438,7 @@ def _full_audit_hud(
         llm_paths=llm_paths,
     )
 
-    mermaid = render_mermaid(graph, seeds, rings)
+    mermaid = render_mermaid(graph, seeds, rings, danger_paths=danger_paths)
     invalid = validate_mermaid_edges(graph, mermaid)
     if invalid:
         raise ValueError(f"Mermaid edges not in graph: {invalid}")
@@ -443,6 +446,12 @@ def _full_audit_hud(
     seed_label = ", ".join(f"`{s}`" for s in seeds)
     file_word = "file" if total == 1 else "files"
     hop_bit = f", up to {max_hops} {'hop' if max_hops == 1 else 'hops'} away" if max_hops else ""
+    domain_label = domain_for_seeds(
+        seeds,
+        domains or {},
+        danger_paths=danger_paths,
+    )
+    domain_bit = f" touches **{domain_label}** —" if domain_label else ""
     danger_bit = ""
     if danger:
         names = ", ".join(f"`{n.path}`" for n in danger[:3])
@@ -457,7 +466,8 @@ def _full_audit_hud(
         mode="full",
         seed=", ".join(seeds),
         summary=(
-            f"Audited local changes to {seed_label}. **{risk}** risk — "
+            f"Audited local changes to {seed_label}. **{risk}** risk —"
+            f"{domain_bit} "
             f"{total} downstream {file_word}{hop_bit}.{danger_bit}{symbol_bit}"
         ),
         risk_tier=risk,

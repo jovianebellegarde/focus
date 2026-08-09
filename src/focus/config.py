@@ -7,7 +7,7 @@ stay compatible when the config grows.
 from __future__ import annotations
 
 import tomllib
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from focus.hud.classify import DEFAULT_FAN_OUT_THRESHOLD
@@ -20,10 +20,13 @@ class FocusConfig:
     fan_out_threshold: int = DEFAULT_FAN_OUT_THRESHOLD
     # Opt-in evidence-pack caption labeler (also requires FOCUS_LLM_* / API key).
     llm_captions: bool = False
+    # Owner-declared path → domain label for Phase 6 summary framing.
+    # Insertion order = match precedence (first glob wins).
+    domains: dict[str, str] = field(default_factory=dict)
 
 
 def load_config(root: Path) -> FocusConfig:
-    """Read `.focus.toml` under `root`, or return defaults."""
+    """Read `.focus.toml` under ``root``, or return defaults."""
     path = root.resolve() / ".focus.toml"
     if not path.is_file():
         return FocusConfig()
@@ -48,4 +51,22 @@ def load_config(root: Path) -> FocusConfig:
             "on",
         }
 
-    return FocusConfig(fan_out_threshold=value, llm_captions=captions)
+    domains = _parse_domains(data.get("domains"))
+    return FocusConfig(
+        fan_out_threshold=value,
+        llm_captions=captions,
+        domains=domains,
+    )
+
+
+def _parse_domains(raw: object) -> dict[str, str]:
+    """Keep insertion order; skip empty patterns/labels."""
+    if not isinstance(raw, dict):
+        return {}
+    out: dict[str, str] = {}
+    for key, value in raw.items():
+        pattern = str(key).strip()
+        label = str(value).strip() if value is not None else ""
+        if pattern and label:
+            out[pattern] = label
+    return out

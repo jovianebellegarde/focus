@@ -3,7 +3,7 @@
 Living document for project progress. Updated as phases complete.
 
 **Last updated:** August 2026  
-**Current phase:** Phase **5 thin slice shipped** — batched inline PR review comments on changed lines (reuse `FocusHUD` captions; ROA-capped). Phase **4b core complete**; 4c/4d opt-in captions + ledger on PyPI 0.4.0. Check-run annotations + per-file headers remain Explore / deferred.
+**Current phase:** Phase **6 thin slice in flight** — owner `[domains]` labels in executive summary + Mermaid role colors (seed/danger/downstream). Phase **5 thin** shipped (#41). Phase **4b core complete**; 4c/4d on PyPI 0.4.0. Check-run annotations / per-file headers remain Explore / deferred.
 
 **Shipped to PyPI in `focus-hud` 0.4.0 (extension 0.6.0):**
 - **#32 (Phase 4d)** — class-body constant assigns + Typer `@app.command` / Option help as caption purpose source.
@@ -251,17 +251,19 @@ LLM label pass was **removed from Phase 3** and parked (see below): Focus ships 
 
 ---
 
-## Phase 6 — Business impact framing *(idea — unscoped, NOT started)*
+## Phase 6 — Business impact framing *(thin slice)*
 
-**Intent (owner):** translate structural blast radius into *business / product implications* — e.g. "this touches the billing charge path" or "this is on the auth boundary" — so a non-architect reader understands *why the risk matters*, not just which files import which.
+**Goal:** translate structural blast radius into *why the risk matters* for a non-architect reader — without inventing business meaning.
 
-**Hard gate before any code (do not skip):** this brushes the **LLM boundary + evidence-only rule** (`focus-engineering.mdc` §2, impact bar §14). Focus must not have a model *invent* business meaning. Any Phase 6 work needs an options table + owner sign-off first. Open design questions to resolve then:
+| Feature | Purpose | Status |
+|---|---|---|
+| `.focus.toml` `[domains]` map | Owner declares path glob → label; first match wins | ✅ thin (`src/focus/hud/domains.py` + `FocusConfig.domains`) |
+| One summary clause | `touches **{label}**` in Block 1 only (ROA) | ✅ |
+| Convention fallback | billing/auth when Danger Zone + no map / empty map | ✅ labeled heuristic |
+| Mermaid role colors | seed / danger / downstream `classDef` (presentation only) | ✅ companion (`src/focus/hud/mermaid.py`) |
+| Opt-in LLM domain polish | Pack-constrained rephrase | Deferred (not v1) |
 
-- **Where does "business meaning" come from?** Deterministic signals only (path/decorator/route/schema conventions Focus already detects — e.g. `POST /api/charge` → "payment path"), a user-supplied map (`.focus.toml` labels like `billing/** = "Revenue"`), or an opt-in pack-constrained LLM label? Free-form business prose stays **won't-build**.
-- **One home?** Likely a single line in the executive summary / Danger Zone reason — not a new surface. Must clear the impact bar (changes a real decision, silence not better).
-- **ROA:** one sharp implication, or silence. No management-dashboard / metrics drift (that's already out of scope + ethics).
-
-Status: **parked** — capture only. Revisit after Phase 5 merges and caption quality (#34 follow-up) is settled.
+**Locked design:** Option D (map + convention fallback, no LLM) + summary home only. Free-form business prose and management dashboards stay won't-build.
 
 ---
 
@@ -289,7 +291,7 @@ Full ethics list: [`docs/ETHICS.md`](ETHICS.md)
 - **GitHub inline diff (Phase 5):** thin slice shipped — batched review comments on changed lines; check-run annotations + per-file headers still parking-lot.
 - **More languages (Go / Rust / Java):** adoption breadth only — not the differentiator. Revisit when a real user is blocked without them.
 - **Auditable “why this edge”:** click from HUD claim → import evidence (line). Trust theater → trust proof. **`focus explain --why`** ships on the inline-explanations branch; IDE deep-link next.
-- **Business impact framing (Phase 6 idea):** map structural blast radius → product/business implication (payment path, auth boundary). Deterministic conventions or user-supplied labels first; LLM only pack-constrained if ever. Needs options table — see Phase 6 above.
+- **Business impact framing (Phase 6):** thin slice — `[domains]` → summary + Mermaid role colors; LLM domain polish still deferred.
 
 ---
 

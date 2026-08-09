@@ -4,6 +4,13 @@ Nodes are files. Arrows show *impact direction* (seed → dependents),
 which is the reverse of the import edge A→B ("A imports B"). Every
 emitted arrow is checked against the graph so the diagram cannot invent
 topology.
+
+Role colors (``classDef``) are presentation only — they do not add nodes
+or edges. Legend for product + agent chat:
+
+- **seed** — changed file(s) you edited
+- **danger** — Danger Zone (shared hub / API / schema / config)
+- **downstream** — in blast radius, not seed/danger
 """
 
 from __future__ import annotations
@@ -15,23 +22,41 @@ import networkx as nx
 
 MAX_NODES = 15
 
+# Modest fills that stay readable on GitHub light/dark Mermaid themes.
+_CLASS_DEFS = (
+    "  classDef seed fill:#1f6feb,stroke:#58a6ff,color:#fff",
+    "  classDef danger fill:#9e6a03,stroke:#d29922,color:#fff",
+    "  classDef downstream fill:#21262d,stroke:#8b949e,color:#c9d1d9",
+)
+
 
 def render_mermaid(
     graph: nx.DiGraph,
     seed: str | list[str],
     rings: list[tuple[int, list[str]]],
+    *,
+    danger_paths: set[str] | None = None,
 ) -> str:
-    """Build a Mermaid flowchart for seed(s) and blast radius."""
+    """Build a Mermaid flowchart for seed(s) and blast radius.
+
+    ``danger_paths`` colors Danger Zone nodes (warm). Seeds take priority
+    over danger when a path is both (changed file stays blue).
+    """
     seeds = [seed] if isinstance(seed, str) else list(seed)
+    seed_set = set(seeds)
+    danger_set = set(danger_paths or ())
     nodes = _select_nodes(seeds, rings)
     impact_edges = _impact_edges(graph, nodes)
     lines = [
         "flowchart LR",
         "  %% Nodes = files. Arrow = change flows to (is used by).",
+        "  %% Colors = role only (seed / danger / downstream) — not new topology.",
     ]
-    lines.extend(_subgraph_blocks(nodes, set(seeds)))
+    lines.extend(_subgraph_blocks(nodes, seed_set))
     for src, dst in impact_edges:
         lines.append(f"  {_node_id(src)} --> {_node_id(dst)}")
+    lines.extend(_CLASS_DEFS)
+    lines.extend(_class_assignments(nodes, seed_set, danger_set))
     return "\n".join(lines)
 
 
@@ -46,6 +71,9 @@ def validate_mermaid_edges(graph: nx.DiGraph, mermaid: str) -> list[str]:
     for line in mermaid.splitlines():
         stripped = line.strip()
         if "-->" not in stripped or stripped.startswith("%%"):
+            continue
+        # Skip classDef / class lines (no edges).
+        if stripped.startswith("classDef") or stripped.startswith("class "):
             continue
         left, right = [part.strip() for part in stripped.split("-->", 1)]
         src_path = id_to_path.get(left)
@@ -100,6 +128,34 @@ def _subgraph_blocks(nodes: list[str], seeds: set[str]) -> list[str]:
             marker = " ⭐" if path in seeds else ""
             lines.append(f'    {_node_id(path)}["{path}{marker}"]')
         lines.append("  end")
+    return lines
+
+
+def _class_assignments(
+    nodes: list[str],
+    seeds: set[str],
+    danger_paths: set[str],
+) -> list[str]:
+    """Assign Mermaid classes: seed > danger > downstream."""
+    by_role: dict[str, list[str]] = {
+        "seed": [],
+        "danger": [],
+        "downstream": [],
+    }
+    for path in nodes:
+        nid = _node_id(path)
+        if path in seeds:
+            by_role["seed"].append(nid)
+        elif path in danger_paths:
+            by_role["danger"].append(nid)
+        else:
+            by_role["downstream"].append(nid)
+
+    lines: list[str] = []
+    for role, ids in by_role.items():
+        if not ids:
+            continue
+        lines.append(f"  class {','.join(ids)} {role}")
     return lines
 
 

@@ -11,3 +11,12 @@ fan_out_threshold = 3
 # Never runs on IDE live-buffer overlay audits.
 [llm]
 captions = false
+
+# Phase 6 — owner-declared domain labels for the executive summary.
+# First matching glob wins. Focus attaches the label to proven blast radius;
+# it does not invent business meaning. Omit the section to stay quiet
+# (billing/auth danger-path conventions may still hint as a labeled heuristic).
+# [domains]
+# "billing/**" = "Revenue / charge path"
+# "auth/**" = "Auth boundary"
+# "api/**" = "Public HTTP surface"

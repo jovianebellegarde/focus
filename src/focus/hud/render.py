@@ -32,6 +32,9 @@ def render_hud(hud: FocusHUD) -> str:
             "Legend: each box is a **file**; an arrow means **change flows to** "
             "(that file imports / depends on the previous one).",
             "",
+            "Colors (role only — same topology): **blue** = seed (changed), "
+            "**amber** = Danger Zone, **gray** = downstream.",
+            "",
             "```mermaid",
             hud.mermaid or "",
             "```",

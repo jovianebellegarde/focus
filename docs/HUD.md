@@ -25,6 +25,7 @@ Canonical output contract for CLI stdout, PR comments, and example output. **Do 
 Must include:
 - What changed (seed symbols or files)
 - Risk tier: `LOW` | `MEDIUM` | `HIGH` | `CRITICAL`
+- Optional **domain clause** (Phase 6): `touches **{label}**` when `.focus.toml` `[domains]` matches a seed/Danger Zone (or quiet billing/auth convention). At most one clause; silence when unmapped.
 
 **Example (full HUD):**
 
@@ -46,6 +47,7 @@ Rules:
 - Every edge must exist in computed graph JSON
 - Node IDs = symbol or module paths (LLM may add human label in node text)
 - Use `subgraph` for layers (e.g., auth, billing, api)
+- **Role colors** (presentation only — not new topology): Mermaid `classDef` — **seed** (changed), **danger** (Danger Zone), **downstream** (blast radius). Markdown legend under the diagram names the colors.
 
 **Example:**
 
