@@ -118,4 +118,4 @@ See [`DECISIONS.md`](DECISIONS.md) for full log. Summary:
 - [`TRIGGERS.md`](TRIGGERS.md) — when Focus generates diagrams vs summaries
 - [`.cursor/rules/focus-engineering.mdc`](../.cursor/rules/focus-engineering.mdc) — engineering constraints
 
-Questions? [Open an issue](https://github.com/j0viane/focus/issues/new).
+Questions? [Open an issue](https://github.com/jovianebellegarde/focus/issues/new).

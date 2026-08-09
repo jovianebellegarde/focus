@@ -26,11 +26,12 @@ alwaysApply: true
 ### Do next (after release settles)
 
 1. Confirm PyPI `0.5.0` + GitHub Releases Latest
-2. Confirm Marketplace listing for `j0viane.focus-hud`
+2. Confirm Marketplace listing for `jovianebellegarde.focus-hud`
 3. Parked: dynamic-import Explore; per-file headers; check-run annotations
 
 ### Standing (agent + owner)
 
 - Feature branch + PR unless `ALLOW_MAIN_COMMIT` (releases may use main)
 - Dogfood before commit/push; own PR Test plans; README honesty
-- Git author: `71949760+j0viane@users.noreply.github.com`
+- Git author: `71949760+jovianebellegarde@users.noreply.github.com` (or `71949760@users.noreply.github.com`)
+- GitHub / Marketplace / PyPI Trusted Publisher owner: **`jovianebellegarde`** (not `j0viane`)

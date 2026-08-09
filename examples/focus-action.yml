@@ -5,7 +5,7 @@
 #   A — PR comment (HUD overview)
 #   C — inline review comments on changed lines (Phase 5)
 # Permissions: contents:read (checkout) + pull-requests:write (comment + review).
-# See https://github.com/j0viane/focus/blob/main/docs/PRIVACY.md
+# See https://github.com/jovianebellegarde/focus/blob/main/docs/PRIVACY.md
 #
 name: Focus
 

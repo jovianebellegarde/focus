@@ -70,7 +70,7 @@ Full HUD: [`examples/focus-hud-classify.md`](examples/focus-hud-classify.md).
 
 ## 4. PR comment (live)
 
-This repo’s Action posts (and **updates in place**) a Focus HUD on pull requests. Example PRs: [#2](https://github.com/j0viane/focus/pull/2), [#4](https://github.com/j0viane/focus/pull/4), [#5](https://github.com/j0viane/focus/pull/5).
+This repo’s Action posts (and **updates in place**) a Focus HUD on pull requests. Example PRs: [#2](https://github.com/jovianebellegarde/focus/pull/2), [#4](https://github.com/jovianebellegarde/focus/pull/4), [#5](https://github.com/jovianebellegarde/focus/pull/5).
 
 Drop-in for any repo: [`../examples/focus-action.yml`](../examples/focus-action.yml) · [`ACTION.md`](ACTION.md).
 

@@ -300,4 +300,4 @@ Full ethics list: [`docs/ETHICS.md`](ETHICS.md)
 - **[`PUBLISH.md`](PUBLISH.md)** — PyPI Trusted Publishing
 - **Issues** — architecture decisions and parser edge cases
 
-Questions or blast-radius heuristics? [Open an issue](https://github.com/j0viane/focus/issues/new).
+Questions or blast-radius heuristics? [Open an issue](https://github.com/jovianebellegarde/focus/issues/new).

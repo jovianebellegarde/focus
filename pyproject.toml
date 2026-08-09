@@ -34,10 +34,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/j0viane/focus"
-Repository = "https://github.com/j0viane/focus"
-Issues = "https://github.com/j0viane/focus/issues"
-Documentation = "https://github.com/j0viane/focus/blob/main/docs/DEMO.md"
+Homepage = "https://github.com/jovianebellegarde/focus"
+Repository = "https://github.com/jovianebellegarde/focus"
+Issues = "https://github.com/jovianebellegarde/focus/issues"
+Documentation = "https://github.com/jovianebellegarde/focus/blob/main/docs/DEMO.md"
 
 [project.scripts]
 focus = "focus.cli:app"

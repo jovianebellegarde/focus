@@ -1,7 +1,7 @@
 # Publish focus-hud to PyPI on version tags (v0.1.0, …) via Trusted Publishing.
 # One-time setup: https://docs.pypi.org/trusted-publishers/
 #   PyPI project: focus-hud
-#   Workflow: publish.yml on j0viane/focus, environment: pypi
+#   Workflow: publish.yml on jovianebellegarde/focus, environment: pypi
 
 name: Publish
 

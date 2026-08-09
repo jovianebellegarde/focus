@@ -179,7 +179,7 @@ def test_post_or_update_pr_review_deletes_stale_then_posts(monkeypatch):
     result = post_or_update_pr_review(
         hud=hud,
         token="t",
-        repository="j0viane/focus",
+        repository="jovianebellegarde/focus",
         pr_number=42,
         commit_id="abc123",
         api_url="https://api.github.com",
@@ -218,7 +218,7 @@ def test_post_or_update_pr_review_skips_pass_through_after_cleanup(monkeypatch):
     result = post_or_update_pr_review(
         hud=_hud(mode="pass_through"),
         token="t",
-        repository="j0viane/focus",
+        repository="jovianebellegarde/focus",
         pr_number=7,
         commit_id="deadbeef",
     )

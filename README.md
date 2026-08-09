@@ -40,7 +40,7 @@ focus audit --local --format json        # machine-readable HUD (IDE / tools)
 **Demo fixture (no app required):**
 
 ```bash
-git clone https://github.com/j0viane/focus.git && cd focus
+git clone https://github.com/jovianebellegarde/focus.git && cd focus
 uv sync
 uv run focus trace tests/fixtures/glass_box/auth_utils.py \
   --root tests/fixtures/glass_box --out focus-hud.md
@@ -129,7 +129,7 @@ Surfaces **A** + **C** ship in `focus-hud>=0.5.0` (inline review via `post_revie
 ## Getting started (from this repo)
 
 ```bash
-git clone https://github.com/j0viane/focus.git
+git clone https://github.com/jovianebellegarde/focus.git
 cd focus
 uv sync
 uv run focus scan .
@@ -246,4 +246,4 @@ Details: [`docs/ETHICS.md`](docs/ETHICS.md) · [`docs/PRIVACY.md`](docs/PRIVACY.
 
 ## Author
 
-[Joviane Bellegarde](https://github.com/j0viane). Feedback welcome via Issues.
+[Joviane Bellegarde](https://github.com/jovianebellegarde). Feedback welcome via Issues.

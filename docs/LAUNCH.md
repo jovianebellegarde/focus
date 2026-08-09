@@ -37,16 +37,16 @@ pip install focus-hud
 focus audit --local --out focus-hud.md
 ```
 
-Add the Action to any repo: copy [`examples/focus-action.yml`](https://github.com/j0viane/focus/blob/main/examples/focus-action.yml).
+Add the Action to any repo: copy [`examples/focus-action.yml`](https://github.com/jovianebellegarde/focus/blob/main/examples/focus-action.yml).
 
-Repo: https://github.com/j0viane/focus  
-Demo walkthrough: https://github.com/j0viane/focus/blob/main/docs/DEMO.md
+Repo: https://github.com/jovianebellegarde/focus  
+Demo walkthrough: https://github.com/jovianebellegarde/focus/blob/main/docs/DEMO.md
 
 Would love feedback from folks who review AI-sized PRs — what’s missing for you to trust a blast-radius tool?
 
 ### Links
-- Website / repo: https://github.com/j0viane/focus
-- Demo: https://github.com/j0viane/focus/blob/main/docs/DEMO.md
+- Website / repo: https://github.com/jovianebellegarde/focus
+- Demo: https://github.com/jovianebellegarde/focus/blob/main/docs/DEMO.md
 
 ---
 
@@ -72,9 +72,9 @@ Install:
   focus audit --local --out focus-hud.md
 
 Action (any repo):
-  https://github.com/j0viane/focus/blob/main/examples/focus-action.yml
+  https://github.com/jovianebellegarde/focus/blob/main/examples/focus-action.yml
 
-Repo: https://github.com/j0viane/focus
+Repo: https://github.com/jovianebellegarde/focus
 ```
 
 ---

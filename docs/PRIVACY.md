@@ -145,4 +145,4 @@ Never run golden tests against private third-party repos without permission.
 - [`TESTING.md`](TESTING.md) — synthetic fixtures, no real secrets in CI
 - [`.cursor/rules/focus-engineering.mdc`](../.cursor/rules/focus-engineering.mdc) — credential isolation rule
 
-Questions? [Open an issue](https://github.com/j0viane/focus/issues/new).
+Questions? [Open an issue](https://github.com/jovianebellegarde/focus/issues/new).
