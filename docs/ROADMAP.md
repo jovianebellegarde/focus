@@ -3,7 +3,7 @@
 Living document for project progress. Updated as phases complete.
 
 **Last updated:** August 2026  
-**Current phase:** Phase **4b core complete** — deterministic explanation depth shipped (symbol-proven downstream, why-this-edge jump, JSDoc/TSDoc captions, ROA hard caps); dynamic-import hints parked to Explore. Phase 4c/4d opt-in captions + edit ledger on main. Phase 3 complete on PyPI. **Phase 5 next** (GitHub inline diff annotations).
+**Current phase:** Phase **5 thin slice shipped** — batched inline PR review comments on changed lines (reuse `FocusHUD` captions; ROA-capped). Phase **4b core complete**; 4c/4d opt-in captions + ledger on PyPI 0.4.0. Check-run annotations + per-file headers remain Explore / deferred.
 
 **Shipped to PyPI in `focus-hud` 0.4.0 (extension 0.6.0):**
 - **#32 (Phase 4d)** — class-body constant assigns + Typer `@app.command` / Option help as caption purpose source.
@@ -24,7 +24,7 @@ One computed `FocusHUD` — multiple renderers. **No committed HUD files in git.
 | Surface | What the user sees | In the repo? |
 |---|---|---|
 | **A — PR comment** | Full HUD markdown (summary + Mermaid + Danger Zones) on every PR | **No** — posted/updated via GitHub Action |
-| **C — Inline in the diff** | Risk + hop context on changed / blast-radius files while reviewing | **No** — IDE CodeLens today; GitHub diff annotations in Phase 5 |
+| **C — Inline in the diff** | Edit-shaped ℹ️ on changed lines while reviewing | **No** — IDE CodeLens + GitHub batched review comments (Phase 5 thin); blast radius stays in **A** |
 | **B — Committed `.md`** | `focus-hud.md` checked into the tree | **Out of scope** — local/CI scratch only; gitignored |
 
 ```
@@ -32,8 +32,8 @@ pip install focus-hud
         │
         ├─ Before push (IDE)     → C: CodeLens + HUD panel in your working diff
         │
-        └─ On PR (GitHub Action) → A: HUD comment (ship now)
-                                 → C: inline diff annotations (Phase 5)
+        └─ On PR (GitHub Action) → A: HUD comment (blast radius overview)
+                                 → C: inline review comments on changed lines (Phase 5 thin)
 ```
 
 ---
@@ -52,7 +52,7 @@ pip install focus-hud
 | Evidence-based Danger Zones | Full points-to / data-flow analysis |
 | Parse cache | LLM label pass (parked — hallucination risk) |
 | PyPI (`focus-hud`) + drop-in Action | Marketplace listing polish |
-| CLI `--format json` + IDE CodeLens MVP | GitHub inline diff annotations (Phase 5) |
+| CLI `--format json` + IDE CodeLens MVP + GitHub inline review (Phase 5 thin) | Check-run annotations; per-file header comments |
 
 ---
 
@@ -236,17 +236,32 @@ LLM label pass was **removed from Phase 3** and parked (see below): Focus ships 
 
 ---
 
-## Phase 5 — GitHub inline diff *(next bet after 0.2.0)*
+## Phase 5 — GitHub inline diff *(thin slice shipped)*
 
 **Goal:** Surface **C** on GitHub — pins on the PR **Files changed** tab, alongside existing **A** PR comment.
 
 | Feature | Purpose | Status |
 |---|---|---|
-| Per-file review comments | Danger Zone / hop count on changed files in blast radius | Planned |
-| Check-run annotations (optional) | File-level signals in Checks UI | Explore |
-| Same `FocusHUD` as Action | Reuse `focus audit --format json`; A comment stays the overview | Planned |
+| Inline review comments on **changed lines** | Reuse edit-shaped ℹ️ (`hunk_details` / `line_explanations`) as one batched `COMMENT` review | ✅ thin slice (`src/focus/ci/github_review.py`) |
+| Same `FocusHUD` as Action | `focus audit --format json`; A comment stays the blast-radius overview | ✅ |
+| Per-file header comments | Risk tier / hop count on changed files | Deferred |
+| Check-run annotations (optional) | File-level signals in Checks UI (can hit unchanged downstream) | Explore |
 
-**A** (PR comment block) ships now via [`examples/focus-action.yml`](../examples/focus-action.yml). **C** on GitHub layers on top — not a replacement.
+**A** (PR comment block) ships via [`examples/focus-action.yml`](../examples/focus-action.yml). **C** on GitHub layers on top — not a replacement. Unchanged downstream files stay in **A** only (GitHub review comments cannot anchor outside the diff).
+
+---
+
+## Phase 6 — Business impact framing *(idea — unscoped, NOT started)*
+
+**Intent (owner):** translate structural blast radius into *business / product implications* — e.g. "this touches the billing charge path" or "this is on the auth boundary" — so a non-architect reader understands *why the risk matters*, not just which files import which.
+
+**Hard gate before any code (do not skip):** this brushes the **LLM boundary + evidence-only rule** (`focus-engineering.mdc` §2, impact bar §14). Focus must not have a model *invent* business meaning. Any Phase 6 work needs an options table + owner sign-off first. Open design questions to resolve then:
+
+- **Where does "business meaning" come from?** Deterministic signals only (path/decorator/route/schema conventions Focus already detects — e.g. `POST /api/charge` → "payment path"), a user-supplied map (`.focus.toml` labels like `billing/** = "Revenue"`), or an opt-in pack-constrained LLM label? Free-form business prose stays **won't-build**.
+- **One home?** Likely a single line in the executive summary / Danger Zone reason — not a new surface. Must clear the impact bar (changes a real decision, silence not better).
+- **ROA:** one sharp implication, or silence. No management-dashboard / metrics drift (that's already out of scope + ethics).
+
+Status: **parked** — capture only. Revisit after Phase 5 merges and caption quality (#34 follow-up) is settled.
 
 ---
 
@@ -271,9 +286,10 @@ Full ethics list: [`docs/ETHICS.md`](ETHICS.md)
 
 - **Evidence-pack caption labeler (Phase 4c):** shipped opt-in in focus-hud 0.3.5 — labels all ℹ️ from capped edit packs when enabled; never invents edges. Free-form / topology LLM remains parked.
 - **IDE extension (Phase 4 — deepen C):** symbol-level CodeLens, gutter hop colors, always-on watch, auditable “why this edge” deep links.
-- **GitHub inline diff (Phase 5):** review comments / annotations on PR diff — companion to PR comment (A).
+- **GitHub inline diff (Phase 5):** thin slice shipped — batched review comments on changed lines; check-run annotations + per-file headers still parking-lot.
 - **More languages (Go / Rust / Java):** adoption breadth only — not the differentiator. Revisit when a real user is blocked without them.
 - **Auditable “why this edge”:** click from HUD claim → import evidence (line). Trust theater → trust proof. **`focus explain --why`** ships on the inline-explanations branch; IDE deep-link next.
+- **Business impact framing (Phase 6 idea):** map structural blast radius → product/business implication (payment path, auth boundary). Deterministic conventions or user-supplied labels first; LLM only pack-constrained if ever. Needs options table — see Phase 6 above.
 
 ---
 

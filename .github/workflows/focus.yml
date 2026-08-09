@@ -45,3 +45,19 @@ jobs:
           FOCUS_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           uv run python -c "from pathlib import Path; from focus.ci import post_from_env; print(post_from_env(Path('focus-hud.md')))"
+
+      # Surface C — inline ℹ️ captions on changed lines (Files changed tab).
+      # Same pull-requests:write scope; blast radius stays in the PR comment above.
+      - name: Focus audit (JSON for inline)
+        env:
+          FOCUS_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          uv run focus audit --base "$FOCUS_BASE" --format json --out focus-hud.json
+
+      - name: Post inline review comments
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FOCUS_PR_NUMBER: ${{ github.event.pull_request.number }}
+          FOCUS_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          uv run python -c "from pathlib import Path; from focus.ci import post_review_from_env; print(post_review_from_env(Path('focus-hud.json')))"

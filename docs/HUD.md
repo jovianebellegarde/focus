@@ -175,6 +175,27 @@ Full inventory stays in IDE CodeLens and `--format json`.
 
 ---
 
+## Surface C — GitHub inline review comments (Phase 5 thin slice)
+
+Same `FocusHUD` — **no new schema**. CI runs `focus audit --format json` and posts a batched PR review (`event: COMMENT`) whose inline comments reuse already-computed captions:
+
+| Source field | Anchor |
+|---|---|
+| `changed_symbols[].hunk_details[].detail` | `hunk_details[].line` (`side: RIGHT`) |
+| `line_explanations[].detail` | `line_explanations[].line` (`side: RIGHT`) |
+
+Rules (`src/focus/ci/github_review.py`):
+
+- Skip entirely when `mode == "pass_through"`
+- Cap at `FOCUS_INLINE_MAX` (default **8**); danger-zone / public symbols first (same order as Surface A)
+- Never anchor on `ChangedSymbolInfo.line` (the `def` can sit outside the diff)
+- Bodies include `<!-- focus-line -->` so re-runs delete + replace instead of stacking
+- Blast radius / downstream stays in Surface **A** (unchanged files cannot take review comments)
+
+See [`ACTION.md`](ACTION.md).
+
+---
+
 ## Related documents
 
 - [`TRIGGERS.md`](TRIGGERS.md) — full vs pass-through

@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import json
 import os
-import urllib.error
-import urllib.request
 from pathlib import Path
+
+from focus.ci._http import request_json
 
 FOCUS_COMMENT_MARKER = "<!-- focus-hud -->"
 
@@ -89,41 +89,18 @@ def _list_issue_comments(
     api_url: str, token: str, owner: str, repo: str, pr_number: int
 ) -> list[dict]:
     url = f"{api_url}/repos/{owner}/{repo}/issues/{pr_number}/comments?per_page=100"
-    return _request_json("GET", url, token)
+    return request_json("GET", url, token)
 
 
 def _create_comment(
     api_url: str, token: str, owner: str, repo: str, pr_number: int, body: str
 ) -> None:
     url = f"{api_url}/repos/{owner}/{repo}/issues/{pr_number}/comments"
-    _request_json("POST", url, token, {"body": body})
+    request_json("POST", url, token, {"body": body})
 
 
 def _patch_comment(
     api_url: str, token: str, owner: str, repo: str, comment_id: int, body: str
 ) -> None:
     url = f"{api_url}/repos/{owner}/{repo}/issues/comments/{comment_id}"
-    _request_json("PATCH", url, token, {"body": body})
-
-
-def _request_json(method: str, url: str, token: str, payload: dict | None = None) -> list | dict:
-    data = None if payload is None else json.dumps(payload).encode("utf-8")
-    request = urllib.request.Request(
-        url,
-        data=data,
-        method=method,
-        headers={
-            "Accept": "application/vnd.github+json",
-            "Authorization": f"Bearer {token}",
-            "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "focus-hud",
-            "Content-Type": "application/json",
-        },
-    )
-    try:
-        with urllib.request.urlopen(request, timeout=60) as response:
-            raw = response.read().decode("utf-8")
-            return json.loads(raw) if raw else {}
-    except urllib.error.HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"GitHub API {method} {url} failed: {exc.code} {detail}") from exc
+    request_json("PATCH", url, token, {"body": body})
