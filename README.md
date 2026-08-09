@@ -14,7 +14,7 @@ Focus shows **what else that change touches** — with evidence you can point at
 | **Who** | Juniors shipping AI-assisted PRs, and seniors who have to review them — anyone who must **defend** a change |
 | **What** | An evidence-only blast-radius HUD: import graph → Mermaid map + Danger Zones. No LLM inventing edges |
 | **When** | Right before you push, and on every PR — the moment someone asks “what else breaks?” or “why this?” |
-| **Where** | **A:** GitHub PR comment (full HUD). **C:** inline in the diff — IDE CodeLens + HUD panel now; GitHub file annotations next. **Not** committed `.md` files |
+| **Where** | **A:** GitHub PR comment (full HUD). **C:** inline in the diff — IDE CodeLens + HUD panel, and GitHub review comments on changed lines (Phase 5 thin). **Not** committed `.md` files |
 | **Why** | AI made teams faster at generating code and slower at shared understanding. The feedback loop breaks when the answer is silence |
 | **How** | Parse the repo → dependency graph → reverse-BFS from the diff → quiet unless it matters. Same `FocusHUD` everywhere (`--format json` for the IDE) |
 
@@ -56,10 +56,10 @@ Gallery + walkthrough: [`docs/DEMO.md`](docs/DEMO.md) · [`docs/assets/`](docs/a
 |---|---|---|
 | **A — PR comment** | Every PR (GitHub Action) | Full architecture HUD — summary, Mermaid, Danger Zones. Updates in place on new pushes |
 | **C — IDE diff** | Before you push (Cursor / VS Code) | Edit-shaped ℹ️ on the change; **live while typing** (unsaved buffer); Save refresh; SCM Working Tree (right pane); full HUD map for risk / blast radius |
-| **C — GitHub diff** | PR review (planned) | Inline pins on **Files changed** — companion to the PR comment |
+| **C — GitHub diff** | PR review (Phase 5 thin) | Batched inline review comments on **changed lines** (edit-shaped ℹ️, ROA-capped) — companion to the PR comment; blast radius stays in **A** |
 | ~~**B — git**~~ | — | **Not supported** — no committed `focus-hud.md` |
 
-Same evidence everywhere: parse → graph → `FocusHUD` → renderer (markdown comment, webview, CodeLens, future GitHub annotations).
+Same evidence everywhere: parse → graph → `FocusHUD` → renderer (markdown comment, webview, CodeLens, GitHub inline review).
 
 ---
 
@@ -112,14 +112,17 @@ Details: [`extensions/vscode-focus/README.md`](extensions/vscode-focus/README.md
 
 ---
 
-## GitHub Action (surface A · any repo)
+## GitHub Action (surfaces A + C · any repo)
 
 Copy [`examples/focus-action.yml`](examples/focus-action.yml) → `.github/workflows/focus.yml`.  
-On every PR open/sync, Focus posts (and updates) a HUD **comment** — not a file in the commit.
+On every PR open/sync, Focus posts (and updates):
 
-Details: [`docs/ACTION.md`](docs/ACTION.md). Permissions: `contents: read` + `pull-requests: write` only ([`docs/PRIVACY.md`](docs/PRIVACY.md)).
+- **A** — a HUD **comment** (summary, Mermaid, blast radius)
+- **C** — batched **inline review comments** on changed lines (edit-shaped ℹ️; skip on pass-through; cap 8)
 
-**Phase 5:** inline annotations on the PR diff (**C** on GitHub) — see [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Nothing is committed to the tree. Details: [`docs/ACTION.md`](docs/ACTION.md). Permissions: `contents: read` + `pull-requests: write` only ([`docs/PRIVACY.md`](docs/PRIVACY.md)).
+
+> **Honesty:** Surface **C** needs a `focus-hud` build that includes `focus.ci.post_review_from_env` (Phase 5). On PyPI **0.4.0** today you get **A** only — use this checkout / next release for **C**, or omit the two JSON/inline steps in the drop-in workflow.
 
 ---
 
@@ -186,7 +189,7 @@ flowchart TB
 | AST | Python `ast` + Tree-sitter (JS/TS) |
 | Graph | NetworkX |
 | Diagrams | Mermaid (GitHub + IDE webview) |
-| CI | Opt-in GitHub Action — PR comment (A); inline diff (C) planned |
+| CI | Opt-in GitHub Action — PR comment (A) + inline review comments on changed lines (C, Phase 5 thin) |
 | IDE | VS Code / Cursor — CodeLens + HUD panel (C); extension **0.6.0** |
 | LLM (opt-in) | Pack-only ℹ️ labels — never invents graph edges; off by default |
 
@@ -208,7 +211,7 @@ flowchart TB
 
 ## Roadmap
 
-Phase 3 **complete**. Phase 4 IDE **C** shipping (edit-shaped ℹ️ + live buffer + SCM Working Tree; risk / implication in HUD). Phase **4b core complete** — symbol-proven downstream counts, why-this-edge import jump (#37), JSDoc/TSDoc caption extraction (#38), ROA hard caps enforced (dynamic-import hints parked to Explore). Phase **4c/4d** on PyPI **0.4.0**: opt-in evidence-pack LLM captions + portable edit ledger + caption sweet-spot (extension **0.6.0**). Phase 5 **next** (GitHub diff **C**, beside the **A** PR comment). See [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Phase 3 **complete**. Phase 4 IDE **C** shipping (edit-shaped ℹ️ + live buffer + SCM Working Tree; risk / implication in HUD). Phase **4b core complete** — symbol-proven downstream counts, why-this-edge import jump (#37), JSDoc/TSDoc caption extraction (#38), ROA hard caps enforced (dynamic-import hints parked to Explore). Phase **4c/4d** on PyPI **0.4.0**: opt-in evidence-pack LLM captions + portable edit ledger + caption sweet-spot (extension **0.6.0**). Phase **5 thin slice** — GitHub batched inline review comments on changed lines (beside the **A** PR comment; check-run annotations still Explore). See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ---
 

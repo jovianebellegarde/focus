@@ -1,9 +1,15 @@
 # Drop-in Focus HUD for any repository.
 # Copy to: .github/workflows/focus.yml
 #
-# Installs the published package (focus-hud) and posts/updates a PR comment.
-# Permissions: contents:read (checkout) + pull-requests:write (comment only).
+# Installs the published package (focus-hud) and posts/updates:
+#   A — PR comment (HUD overview)
+#   C — inline review comments on changed lines (Phase 5)
+# Permissions: contents:read (checkout) + pull-requests:write (comment + review).
 # See https://github.com/j0viane/focus/blob/main/docs/PRIVACY.md
+#
+# Note: Surface C needs a focus-hud release that includes
+# `focus.ci.post_review_from_env` (Phase 5). Until that lands on PyPI,
+# either omit the two JSON/inline steps or install from this repo's main.
 
 name: Focus
 
@@ -31,7 +37,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install Focus
-        run: pip install "focus-hud>=0.3.3"
+        run: pip install "focus-hud>=0.4.0"
 
       - name: Run Focus audit
         env:
@@ -44,3 +50,18 @@ jobs:
           FOCUS_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           python -c "from pathlib import Path; from focus.ci import post_from_env; print(post_from_env(Path('focus-hud.md')))"
+
+      # Surface C — inline ℹ️ captions on changed lines (Files changed tab).
+      # Requires focus-hud>=0.4.0 with github_review; same pull-requests:write scope.
+      - name: Focus audit (JSON for inline)
+        env:
+          FOCUS_BASE: ${{ github.event.pull_request.base.sha }}
+        run: focus audit --base "$FOCUS_BASE" --format json --out focus-hud.json
+
+      - name: Post inline review comments
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FOCUS_PR_NUMBER: ${{ github.event.pull_request.number }}
+          FOCUS_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python -c "from pathlib import Path; from focus.ci import post_review_from_env; print(post_review_from_env(Path('focus-hud.json')))"
