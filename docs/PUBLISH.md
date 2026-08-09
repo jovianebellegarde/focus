@@ -25,7 +25,12 @@ git tag v0.4.0
 git push origin v0.4.0
 ```
 
-That runs [`.github/workflows/publish.yml`](../.github/workflows/publish.yml) (`uv build` + `pypa/gh-action-pypi-publish`).
+That runs [`.github/workflows/publish.yml`](../.github/workflows/publish.yml), which does two things on a `v*` tag:
+
+1. **Publishes to PyPI** — `uv build` + `pypa/gh-action-pypi-publish`.
+2. **Creates a GitHub Release** — `gh release create <tag> --generate-notes --verify-tag`, so the [Releases page](https://github.com/j0viane/focus/releases) tracks the tag as **Latest**.
+
+> A tag push alone updates PyPI but does **not** create a GitHub Release — that is a separate object. Step 2 (added in #40) ties them together. After a release, confirm both PyPI **and** the Releases page show the new version.
 
 Manual local publish (if you have an API token):
 

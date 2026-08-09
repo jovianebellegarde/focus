@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Focus — Project status (memory / handoff)
 
-**Last updated:** 2026-08-06 (evening) — **#32 / #33 / #34 merged** onto `origin/main` @ `c64d527`; **local pulled up to `c64d527`** (190 passed; caption cache cleared for `320-ground-v3`); PyPI `focus-hud` **0.3.5**; extension **0.5.15**  
+**Last updated:** 2026-08-08 (evening) — **housekeeping done**: `docs/PUBLISH.md` now documents tag → PyPI **and** GitHub Release (#40); leftover `ci/auto-github-release` branch deleted (local + remote); handoff refreshed. Still: **`focus-hud` 0.4.0 live on PyPI + GitHub Releases (Latest)**; Phase **4b core complete**; extension **0.6.0** (Marketplace held); `main` @ **`0beb46d`** (+ this housekeeping commit)  
 **Product:** Focus — evidence-only blast-radius HUD. PyPI `focus-hud`, CLI `focus`, IDE `extensions/vscode-focus`. Repo: `j0viane/focus`.
 
 **Read this first in a new chat.** Update this file when pausing or before switching windows.
@@ -16,50 +16,35 @@ alwaysApply: true
 
 | Item | State |
 |---|---|
-| **Checked-out branch** | `main` @ **`c64d527`** — **up to date** with `origin/main` (pulled 2026-08-06 eve; `2db9615..c64d527` fast-forward). `190 passed`. Local dirty: this handoff file only |
+| **Checked-out branch** | `main` @ **`0beb46d`** — **up to date** with `origin/main`. `200 passed` (pre-#40 release suite; #40 is CI-only). Local dirty: this handoff file only |
 | **Open PRs** | **None** |
-| **`origin/main` HEAD** | **`c64d527`** — *Merge PR #34* (caption quality). Stack on main: #31 → #32 (`aaba1eb`) → #33 (`cc66868`) → #34 (`c64d527`) |
-| **PyPI** | **`focus-hud` 0.3.5** — tag `v0.3.5`. **#32–#34 are on GitHub `main` but not on PyPI** — dogfood via `.venv/bin/focus` after pull (or worktree `PYTHONPATH=…/src` until pull) |
-| **Extension** | **0.5.15** — Audit Local waits for open-file LLM before first paint; no `def` risk rail; single ℹ️ CodeLens |
-| **LLM captions (on `origin/main`)** | Opt-in; default **`qwen2.5-coder:3b`**; `MAX_LABEL_CHARS = 320`; prompt rev **`320-ground-v3`** (from #34); never on overlay. Clear caption cache after pull (rev bump) |
-| **Phase 4c / 4d (on `origin/main`)** | Caption labeler + module-assign ledger (#29); sweet-spot + quieter IDE (#30); **class-body assigns + Typer CLI purpose** (#32) |
-| **Phase 4b ROA (on `origin/main`)** | Tiny-diff HUD (`db82b18`): ≤5 changed lines **and** &lt;2 downstream files **and** no path/Danger/shared seed → pass-through. **Symbol-proven downstream filter** (#33) — `symbol_filter.py`; counts feed triggers post-filter |
+| **`origin/main` HEAD** | **`0beb46d`** — *Merge PR #40* (auto GitHub Release on tag). Prior: release `d7ae6bf` (0.4.0) ← #39 ← #38 ← #37 ← #36 |
+| **PyPI** | **`focus-hud` 0.4.0** — live (`pip install "focus-hud>=0.4.0"`). Tag `v0.4.0`, publish CI green. Includes #32/#33/#34/#37/#38. `.venv` synced (`focus version` → 0.4.0) |
+| **GitHub Releases** | **`focus-hud 0.4.0` = Latest** ([releases/tag/v0.4.0](https://github.com/j0viane/focus/releases/tag/v0.4.0)). `v0.3.5` backfilled. Older: 0.3.1 → 0.1.0 |
+| **Extension** | **0.6.0** — why-this-edge import jump (#37) + JSDoc/TSDoc captions (#38). **Not** on Marketplace (held); sideload `./scripts/install-extension.sh` |
+| **LLM captions** | Opt-in; default **`qwen2.5-coder:3b`**; `MAX_LABEL_CHARS = 320`; prompt rev **`320-ground-v3`** (#34); never on overlay |
+| **Phase 4b** | **Core complete** — symbol-proven downstream (#33), why-this-edge (#37), JSDoc/TSDoc (#38), ROA hard caps + guard tests (#39). Dynamic-import / string-literal hints **parked to Explore** (topology gate) |
+| **Phase 4c / 4d** | Caption labeler + ledger on PyPI 0.4.0 (#29/#30/#32/#34) |
+| **Publish CI** | Tag `v*` → PyPI **and** (after #40) `gh release create` with `--generate-notes`. `permissions: contents: write` |
 | **Cache** | Local pack-hash memory+disk only — **no Redis** |
-| **Marketplace** | **Held** until product feels solid / owner says go |
-| **Agent teaching** | Canonical **only** private `cursor-rules` → `rules/upskilling.mdc` + hooks (`session-start-teach.sh`, `ask-before-git-publish.sh`). Recap in **same reply** (no stop-hook). Eng §17 = owner-owned co-write |
+| **Marketplace** | **Held** until owner says go |
+| **Agent teaching** | Canonical **only** private `cursor-rules` → `rules/upskilling.mdc` + hooks. Recap in **same reply** (no stop-hook). Eng §17 = owner-owned co-write |
+| **Agent gauntlet** | `agent-verification-gauntlet.mdc` — **no change needed** (tonight’s miss was release-surface: tag≠GitHub Release; fixed in #40 + Releases backfill). Dogfood stays Focus gates §9 |
 
-### Just merged (2026-08-06 UTC; verified via `gh pr view`)
+### Merged this session (2026-08-06 / 07 UTC)
 
-| PR | Merge commit | Merged at (UTC) | What landed |
-|---|---|---|---|
-| **[#32](https://github.com/j0viane/focus/pull/32)** | `aaba1eb` | 23:12:53 | Class-body assigns + Typer `@app.command` / Option help purpose |
-| **[#33](https://github.com/j0viane/focus/pull/33)** | `cc66868` | 23:14:32 | Filter blast rings by proven import+call of changed symbol (`hud/symbol_filter.py`) |
-| **[#34](https://github.com/j0viane/focus/pull/34)** | `c64d527` | 23:14:48 | Tighter prompts/pack grounding; chatty/>2-sentence validate; `prompt_rev=320-ground-v3`; default model stays 3b |
+| PR | What |
+|---|---|
+| **#36** | Roadmap honesty header |
+| **#37** | Why-this-edge import jump (+ seed-file CodeLens fix `148a761`) |
+| **#38** | JSDoc/TSDoc → `Definition.docstring` |
+| **#39** | Close Phase 4b core — ROA caps marked ✅ + caps guard tests |
+| **release** | `d7ae6bf` — `focus-hud` 0.4.0 / extension 0.6.0 → PyPI |
+| **#40** | `publish.yml` auto-creates GitHub Release on tag push |
 
-**Local vs remote:** this workspace has **not** pulled yet — editable `.venv` still runs pre-#32–#34 code until `git pull`.
+**Branches / worktrees:** all prior feature worktrees deleted. `ci/auto-github-release` deleted **local + remote** (2026-08-08). Only `main` remains.
 
-**Worktrees** (still on disk; optional until cleanup — code now on `origin/main`):
-
-| Branch | Path | Tip (pre-merge) |
-|---|---|---|
-| `feat/ledger-heuristics` | `~/.cursor/worktrees/ledger-heuristics-c519e82e/Focus-cebabdae42e7` | `3a3cd6a` |
-| `feat/symbol-downstream` | `~/.cursor/worktrees/symbol-downstream-a3f7b2c1/Focus-cebabdae42e7` | `ea496a9` |
-| `feat/caption-quality` | `~/.cursor/worktrees/caption-quality-2ecbc2a9/Focus-cebabdae42e7` | `3d479d0` |
-
-Remote feature refs may still exist (e.g. `feat/ledger-heuristics` @ `3a3cd6a` seen after merge). Safe to delete branches + worktrees after local pull confirms green.
-
-**Chosen approaches (locked):** #32 class-body + Typer (JSDoc/TSDoc deferred); #33 filter file-level rings (not rebuild symbol graph); #34 prompt/pack on 3b first (no default model switch).
-
-### Recently shipped (product + process)
-
-| When | What | Notes |
-|---|---|---|
-| 2026-08-06 | #32 → #33 → #34 merged | Class-body/Typer ledger; symbol-proven downstream filter; caption `320-ground-v3`. Order preserved. Not on PyPI yet |
-| 2026-08-02 | #31 merged | Rules/gates/upskilling alignment (`2db9615`) |
-| 2026-08-02 | Parallel agents opened #32–#34 | Three worktrees; agent Test plans filled |
-| 2026-08-02 | Tiny-diff → pass-through | `db82b18` on **`main` directly** — lesson: product = feature branch → PR |
-| 2026-08-02 | Upskilling / hooks (`cursor-rules`) | Single teach home; no stop-hook recap; publish hook allows main only for `cursor-rules` |
-| Earlier | #29 / #30 / 0.3.5 / 0.5.15 | LLM captions + 4d thin slice; caption sweet-spot; quieter IDE |
+**Chosen approaches (locked):** #32 class-body + Typer; #33 filter file-level rings (not rebuild symbol graph); #34 prompt/pack on 3b first; JSDoc shipped #38; ROA caps keep 260/110/110/2 + ℹ️ clip 52.
 
 ### Locked UX (do not regress without options table)
 
@@ -70,43 +55,50 @@ Remote feature refs may still exist (e.g. `feat/ledger-heuristics` @ `3a3cd6a` s
 5. Never LLM on live overlay / save path
 6. One `explanationLensTitle` CodeLens — Cursor joins same-line lenses with ` | `; no multi-lens wrap
 7. Tiny + low blast → pass-through; path / Danger Zone / shared-layout seeds still force full HUD even on a one-line edit
+8. Seed file still gets top “who imports me” why-edge CodeLens alongside per-symbol ℹ️ (#37 fix)
 
-### Smoke / dogfood recipes (post-pull on `main`)
+### Smoke / dogfood recipes
 
 **#32 ledger:** Edit a class-body constant with a method reader (stranger name e.g. `RETRY_LIMIT`). Audit Local **without** LLM. Pass if ℹ️ names scope (`read by …`), not orphan fallback.
 
 **#33 symbol filter:** glass_box — edit only `hash_password` → 0 downstream; edit only `validate_token` → 4 downstream + Mermaid.  
 `.venv/bin/focus audit --local --path <fixture> --base main`
 
-**#34 captions:** Clear cache after rev bump; `focus audit --local --llm-captions` with Ollama 3b. Score: invent entity? invent behavior? better than det? Optional `FOCUS_LLM_MODEL=qwen2.5-coder:7b` bake-off — do not switch default unless 7b wins invent+latency.
+**#34 captions:** Clear cache after rev bump; `focus audit --local --llm-captions` with Ollama 3b.
+
+**#37 why-edge:** In IDE, CodeLens on hop-1 / seed “who imports me” jumps to proving import line.
+
+**ROA caps:** Long return/assign ℹ️ clips with `…` (slot ≤52); explanation ≤260.
 
 Other notes:
 
-- Prefer `.venv/bin/focus` for anything newer than PyPI 0.3.5
+- `.venv/bin/focus` == PyPI 0.4.0. Prefer either for dogfood.
 - Workspace `.vscode/settings.json` may set `focus.llmCaptions: true` (gitignored)
 - Tiny-diff fixture idea: `/tmp/focus-tiny-dogfood` / glass_box billing pattern
+- **cursor-rules hook (2026-08-06):** `ask-before-git-publish.sh` — (a) gates `git -c … commit` (`7b76703`); (b) tag / feature-branch pushes from a `main` checkout are **not** treated as main publishes (`5a5fb64`). Known Cursor gap: `beforeShellExecution` may not fire for agent tool-shell after a **mid-session restart** — owner-ask stays the real backstop
+- **Tag ≠ Release lesson:** pushing `vX.Y.Z` alone used to update PyPI but not the GitHub Releases page. #40 ties them. Still confirm Releases page after the next tag
+- `docs/PUBLISH.md` now documents tag → PyPI **and** GitHub Release (#40) — honesty follow-up ✅ done 2026-08-08
 
 ### Do next
 
-1. **`git pull --ff-only origin main`** in this checkout (land `c64d527`); re-run `.venv/bin/python -m pytest -q`
-2. Optional: delete remote `feat/ledger-heuristics` / `feat/symbol-downstream` / `feat/caption-quality` + remove the three worktrees
-3. Commit or discard this handoff dirty (rules-only → small PR or fold into next docs touch)
-4. Owner smoke of #32–#34 on pulled `main` if not already done in IDE
-5. More **4d ledger** shapes; **JSDoc/TSDoc** (Typer already landed with #32)
-6. Caption quality follow-up from #34 *(owner)* notes / optional 7b bake-off
-7. **Phase 5** — GitHub inline diff annotations
-8. **Marketplace** — held
-9. Optional: **PyPI bump** so installers get #32–#34; vulture/radon on `explain.py` only (~2.5k LOC; not a rewrite)
+1. **Phase 5** — GitHub inline diff annotations (reuse `--format json`) — **next real bet** (options table before code: LLM/topology gate n/a, but per-file comment vs check-run annotation is a design choice)
+2. Optional: **Marketplace** publish of extension 0.6.0 — **held** until owner says go
+3. Dynamic-import / string-literal hints — **parked to Explore** (topology gate; options table before code)
+4. Caption quality follow-up from #34 *(owner)* / optional `qwen2.5-coder:7b` bake-off
+5. Optional: vulture/radon on `explain.py` only (~2.5k LOC; not a rewrite)
+6. Verify publish hook re-arms in a **fresh** Cursor session
+
+*(Housekeeping 2026-08-08 done: PUBLISH.md honesty, ci branch delete, handoff refresh — committed to `main` w/ ALLOW_MAIN_COMMIT.)*
 
 ### Standing (agent + owner)
 
-- No commit/push/PR unless asked
-- **Feature branch + PR** for Focus (and similar product repos) — never ship straight to `main` unless explicit `ALLOW_MAIN_COMMIT` (`focus-agent-gates.mdc` §10). Private **`cursor-rules` may use `main`**
-- **Dogfood before commit/push** — real CLI/IDE on a concrete edit; show evidence; wait for owner OK (`focus-agent-gates.mdc` §9). Pytest ≠ product proof
-- Own PR Test plan: automatable boxes `[x]` with evidence; leave only *(owner)* items
-- README honesty on user-visible changes; honest about PyPI vs this checkout
-- Dogfood CLI: `.venv/bin/focus` (editable) or published `focus-hud>=0.3.5`
+- No commit/push/PR unless asked — **ask explicitly**; never infer from dogfood “works”/“yup”
+- **Feature branch + PR** for Focus — never ship straight to `main` unless explicit `ALLOW_MAIN_COMMIT` (`focus-agent-gates.mdc` §10). Private **`cursor-rules` may use `main`**
+- **Dogfood before commit/push** — real CLI/IDE on a concrete edit; show evidence; wait for owner OK (§9). Pytest ≠ product proof
+- Own PR Test plan: automatable boxes `[x]` with evidence; leave only true *(owner)* items
+- README honesty on user-visible changes; honest about PyPI vs this checkout; **also check GitHub Releases Latest** after a version tag
+- Dogfood CLI: `.venv/bin/focus` (0.4.0) or published `focus-hud>=0.4.0`
 - Captions must stay portable — no Focus-lore special cases
 - LLM never on live overlay; packs only; never full files / full graph
-- Teaching = **`upskilling.mdc` only** — expand acronyms; no-CS-school bar; recap what/why/connects/breaks **in the same reply**; **no interview one-liners** unless she asks for interview prep; **no stop-hook second turn**
+- Teaching = **`upskilling.mdc` only** — expand acronyms; no-CS-school bar; recap what/why/connects/breaks **in the same reply**; **no interview one-liners** unless she asks; **no stop-hook second turn**
 - Git author for push: GitHub noreply `71949760+j0viane@users.noreply.github.com` (avoids GH007)
