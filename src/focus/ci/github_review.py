@@ -16,7 +16,8 @@ import os
 from pathlib import Path
 
 from focus.ci._http import request_json
-from focus.models import ChangedSymbolInfo, FocusHUD
+from focus.hud.render import symbol_sort_key
+from focus.models import FocusHUD
 
 FOCUS_LINE_MARKER = "<!-- focus-line -->"
 DEFAULT_INLINE_MAX = 8
@@ -43,7 +44,7 @@ def build_line_comments(
     danger_paths = {node.path for node in hud.danger_zones}
     ordered_symbols = sorted(
         hud.changed_symbols,
-        key=lambda s: _symbol_sort_key(s, danger_paths),
+        key=lambda s: symbol_sort_key(s, danger_paths),
     )
 
     candidates: list[dict] = []
@@ -142,16 +143,6 @@ def post_review_from_env(hud_json_path: Path) -> str:
 
 def _comment_body(detail: str) -> str:
     return f"{FOCUS_LINE_MARKER}\n{detail}"
-
-
-def _symbol_sort_key(
-    symbol: ChangedSymbolInfo,
-    danger_paths: set[str],
-) -> tuple[int, int, str, str]:
-    """Danger-zone paths and public names first; private helpers last."""
-    in_danger = 0 if symbol.path in danger_paths else 1
-    private = 1 if symbol.name.startswith("_") else 0
-    return (in_danger, private, symbol.path, symbol.name)
 
 
 def _pr_number_from_event() -> str | None:

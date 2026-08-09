@@ -57,7 +57,7 @@ def _your_changes_bullets(hud: FocusHUD) -> list[str]:
     danger_paths = {node.path for node in hud.danger_zones}
     ordered = sorted(
         hud.changed_symbols,
-        key=lambda s: _symbol_sort_key(s, danger_paths),
+        key=lambda s: symbol_sort_key(s, danger_paths),
     )
     shown = ordered[:MAX_PR_SYMBOLS]
     lines = [_format_symbol_bullet(s) for s in shown]
@@ -70,11 +70,14 @@ def _your_changes_bullets(hud: FocusHUD) -> list[str]:
     return lines
 
 
-def _symbol_sort_key(
+def symbol_sort_key(
     symbol: ChangedSymbolInfo,
     danger_paths: set[str],
 ) -> tuple[int, int, str, str]:
-    """Danger-zone paths and public names first; private helpers last."""
+    """Danger-zone paths and public names first; private helpers last.
+
+    Shared by Surface A (PR markdown) and Surface C (inline review caps).
+    """
     in_danger = 0 if symbol.path in danger_paths else 1
     private = 1 if symbol.name.startswith("_") else 0
     return (in_danger, private, symbol.path, symbol.name)
