@@ -139,7 +139,7 @@ uv run focus audit --local
 
 Unchanged files reuse **`.focus-cache/`** (gitignored). Pass `--no-cache` to force a full re-parse.
 
-Optional: copy [`.focus.toml.example`](.focus.toml.example) → `.focus.toml` to tune `fan_out_threshold` (default **3**).
+Optional: copy [`.focus.toml.example`](.focus.toml.example) → `.focus.toml` to tune `fan_out_threshold` (default **3**) and optional Phase 6 `[domains]` labels (path glob → summary clause, e.g. `"billing/**" = "Revenue / charge path"`).
 
 Requirements: Python 3.12+. **PyPI:** `pip install "focus-hud>=0.4.0"`. **This checkout:** `uv sync` → same **0.4.0** line. Publish notes: [`docs/PUBLISH.md`](docs/PUBLISH.md).
 
@@ -211,7 +211,7 @@ flowchart TB
 
 ## Roadmap
 
-Phase 3 **complete**. Phase 4 IDE **C** shipping (edit-shaped ℹ️ + live buffer + SCM Working Tree; risk / implication in HUD). Phase **4b core complete** — symbol-proven downstream counts, why-this-edge import jump (#37), JSDoc/TSDoc caption extraction (#38), ROA hard caps enforced (dynamic-import hints parked to Explore). Phase **4c/4d** on PyPI **0.4.0**: opt-in evidence-pack LLM captions + portable edit ledger + caption sweet-spot (extension **0.6.0**). Phase **5 thin slice** — GitHub batched inline review comments on changed lines (beside the **A** PR comment; check-run annotations still Explore). See [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Phase 3 **complete**. Phase 4 IDE **C** shipping (edit-shaped ℹ️ + live buffer + SCM Working Tree; risk / implication in HUD). Phase **4b core complete** — symbol-proven downstream counts, why-this-edge import jump (#37), JSDoc/TSDoc caption extraction (#38), ROA hard caps enforced (dynamic-import hints parked to Explore). Phase **4c/4d** on PyPI **0.4.0**: opt-in evidence-pack LLM captions + portable edit ledger + caption sweet-spot (extension **0.6.0**). Phase **5 thin** — GitHub batched inline review comments on changed lines (#41). Phase **6 thin** (this checkout until next tag): `.focus.toml` `[domains]` → one summary clause + Mermaid role colors (seed/danger/downstream). See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ---
 

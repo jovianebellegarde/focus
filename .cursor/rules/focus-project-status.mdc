@@ -5,8 +5,8 @@ alwaysApply: true
 
 # Focus — Project status (memory / handoff)
 
-**Last updated:** 2026-08-08 (evening) — **Phase 5 thin slice dogfooded on [PR #41](https://github.com/jovianebellegarde/focus/pull/41)** (`feat/phase5-inline-review-comments` @ `152ad0d`): CI `posted` 8 inline review comments; sync kept count at 8. Awaiting owner OK to merge. PyPI still **0.4.0** (Surface A only until next tag). Extension **0.6.0** (Marketplace held).  
-**Product:** Focus — evidence-only blast-radius HUD. PyPI `focus-hud`, CLI `focus`, IDE `extensions/vscode-focus`. Repo: `j0viane/focus`.
+**Last updated:** 2026-08-08 (late) — **Phase 6 thin + Mermaid colors dogfooded on [PR #42](https://github.com/jovianebellegarde/focus/pull/42)** (`feat/phase6-domains-mermaid-colors` @ `9ce688e`). Phase **5 merged** (#41). PyPI still **0.4.0**. Extension **0.6.0** (Marketplace held).  
+**Product:** Focus — evidence-only blast-radius HUD. PyPI `focus-hud`, CLI `focus`, IDE `extensions/vscode-focus`. Repo: `j0viane/focus` → `jovianebellegarde/focus`.
 
 **Read this first in a new chat.** Update this file when pausing or before switching windows.
 
@@ -16,51 +16,49 @@ alwaysApply: true
 
 | Item | State |
 |---|---|
-| **Checked-out branch** | `feat/phase5-inline-review-comments` @ **`152ad0d`** — Phase 5 thin slice dogfooded |
-| **Open PRs** | **[#41](https://github.com/jovianebellegarde/focus/pull/41)** — Phase 5 inline review comments (awaiting owner merge OK) |
-| **`origin/main` HEAD** | **`14558eb`** — housekeeping (PUBLISH.md + handoff). Prior: `0beb46d` (#40) ← release `d7ae6bf` (0.4.0) |
-| **PyPI** | **`focus-hud` 0.4.0** — live. Phase 5 code is **this checkout only** until a release tag |
+| **Checked-out branch** | `feat/phase6-domains-mermaid-colors` @ **`9ce688e`** — Phase 6 dogfooded |
+| **Open PRs** | **[#42](https://github.com/jovianebellegarde/focus/pull/42)** — Phase 6 domains + Mermaid colors (awaiting owner merge OK) |
+| **`origin/main` HEAD** | Phase 5 merge (#41) |
+| **PyPI** | **`focus-hud` 0.4.0** — live. Phase 5/6 are **this checkout** until next tag |
 | **GitHub Releases** | **`focus-hud 0.4.0` = Latest** |
-| **Extension** | **0.6.0** — **Not** on Marketplace (held); sideload `./scripts/install-extension.sh` |
-| **LLM captions** | Opt-in; default **`qwen2.5-coder:3b`**; `MAX_LABEL_CHARS = 320`; prompt rev **`320-ground-v3`** (#34); never on overlay |
-| **Phase 4b** | **Core complete** — #33/#37/#38/#39. Dynamic-import hints **parked to Explore** |
-| **Phase 4c / 4d** | On PyPI 0.4.0 |
-| **Phase 5** | **Thin slice implemented** — inline PR review comments on changed lines; check-run annotations / per-file headers deferred |
-| **Publish CI** | Tag `v*` → PyPI **and** GitHub Release (#40) |
-| **Cache** | Local pack-hash memory+disk only — **no Redis** |
-| **Marketplace** | **Held** until owner says go |
-| **Agent teaching** | Canonical **only** private `cursor-rules` → `rules/upskilling.mdc` + hooks. Recap in **same reply** |
+| **Extension** | **0.6.0** — Marketplace **held** |
+| **Phase 5** | **Merged** — inline PR review comments |
+| **Phase 6** | **Thin slice** — `[domains]` → summary; Mermaid `classDef` seed/danger/downstream; no LLM |
+| **Marketplace** | **Held** |
+| **Agent teaching** | Canonical **only** private `cursor-rules` → `rules/upskilling.mdc` + hooks |
 
-### Phase 5 locked design (do not regress without options table)
+### Mermaid role legend (product + agent chat)
 
-1. Mechanism: batched `POST .../pulls/{n}/reviews` with `event: COMMENT` (one notification)
-2. Anchors: `side: RIGHT` on `HunkDetail.line` / `LineExplanation.line` only — never `ChangedSymbolInfo.line`
-3. Bodies: already-computed `detail` + `<!-- focus-line -->` marker
-4. ROA: skip `pass_through`; cap `FOCUS_INLINE_MAX` default 8; danger/public first
-5. Idempotent: GET review comments → DELETE marker ones → POST fresh review
-6. Blast radius / downstream stays in Surface **A** (unchanged files cannot take review comments)
-7. Same `pull-requests: write` — no `checks: write`
+When drawing Focus architecture diagrams in **CLI/PR HUD** or **in Cursor chat**, use the same roles:
+
+| Role | Meaning | Mermaid class |
+|---|---|---|
+| **seed** | Changed file(s) | `classDef seed` (blue) |
+| **danger** | Danger Zone | `classDef danger` (amber) |
+| **downstream** | Blast-radius dependent | `classDef downstream` (gray) |
+
+Colors are presentation only — never invent nodes/edges. Prefer `classDef` + `class` over per-node `style`. Pair with a short text legend.
+
+### Phase 6 locked design
+
+1. Source: `.focus.toml` `[domains]` path glob → label (first match wins); empty map → quiet billing/auth convention on Danger Zones only
+2. One home: executive summary `touches **{label}**` — not every ℹ️, not a new block
+3. No LLM domain polish in v1
+4. No Focus-lore symbol dictionaries for domains
 
 ### Smoke / dogfood recipes
 
-**Phase 5 inline:** On a PR with a real code edit, workflow (or local `post_review_from_env`) should pin captions on changed lines in Files changed; a second sync should replace (not duplicate) marker comments. Pass-through diffs → `skipped`.
+**Phase 6 domains:** Add `[domains] "auth_utils.py" = "Login boundary"` under a glass_box root (or repo `.focus.toml`). `focus trace auth_utils.py` / audit → summary contains `touches **Login boundary**` exactly once.
 
-**#32 ledger / #33 symbol filter / #34 captions / #37 why-edge / ROA caps:** unchanged recipes from prior handoff.
+**Mermaid colors:** Full HUD mermaid includes `classDef seed` / `danger` / `downstream` and `class …` lines; markdown legend names blue/amber/gray.
 
-Other notes:
-
-- `.venv` re-synced 2026-08-08 after move from `~/Cursor/Focus` → `~/Portfolio/Focus` (stale editable `.pth` was pointing at deleted path)
-- Drop-in `examples/focus-action.yml` includes Surface C steps; honest that PyPI 0.4.0 lacks `post_review_from_env` until next tag
-- `docs/PUBLISH.md` documents tag → PyPI **and** GitHub Release (#40)
+**Phase 5 inline:** PR workflow posts/replaces `<!-- focus-line -->` review comments (cap 8).
 
 ### Do next
 
-1. Dogfood Phase 5 on throwaway/this PR → owner OK → merge
-2. Optional: PyPI bump so drop-in Action gets Surface C
-3. Optional: **Marketplace** publish of extension 0.6.0 — **held**
-4. Dynamic-import / string-literal hints — **parked to Explore**
-5. Caption quality follow-up from #34 *(owner)* / optional `qwen2.5-coder:7b` bake-off
-6. Deferred Phase 5: per-file header comments; check-run annotations (Explore)
+1. Owner OK → merge [PR #42](https://github.com/jovianebellegarde/focus/pull/42)
+2. Optional: PyPI bump for Phase 5 Surface C + Phase 6
+3. Marketplace held; dynamic-import parked; caption quality #34 *(owner)*
 
 ### Standing (agent + owner)
 
@@ -68,9 +66,8 @@ Other notes:
 - **Feature branch + PR** for Focus — never ship straight to `main` unless explicit `ALLOW_MAIN_COMMIT`
 - **Dogfood before commit/push** — real CLI/IDE on a concrete edit; show evidence; wait for owner OK (§9)
 - Own PR Test plan: automatable boxes `[x]` with evidence; leave only true *(owner)* items
-- README honesty on user-visible changes; honest about PyPI vs this checkout; **also check GitHub Releases Latest** after a version tag
-- Dogfood CLI: `.venv/bin/focus` (0.4.0) or published `focus-hud>=0.4.0`
-- Captions must stay portable — no Focus-lore special cases
+- README honesty on user-visible changes; honest about PyPI vs this checkout
+- Captions/domains must stay portable — no Focus-lore special cases
 - LLM never on live overlay; packs only; never full files / full graph
-- Teaching = **`upskilling.mdc` only** — expand acronyms; no-CS-school bar; recap what/why/connects/breaks **in the same reply**; **no interview one-liners** unless she asks; **no stop-hook second turn**
+- Teaching = **`upskilling.mdc` only** — recap in same reply; no interview one-liners unless asked
 - Git author for push: GitHub noreply `71949760+j0viane@users.noreply.github.com` (avoids GH007)

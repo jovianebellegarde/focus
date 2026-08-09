@@ -1,0 +1,20 @@
+---
+description: Focus Mermaid role colors — seed / danger / downstream (HUD + chat)
+alwaysApply: true
+---
+
+# Focus — Mermaid role colors
+
+Always color Focus architecture Mermaid (product HUD and agent chat) with the same roles. Do not wait to be asked.
+
+| Role | Meaning | Class | Color |
+|---|---|---|---|
+| **seed** | Changed file(s) | `seed` | blue `#1f6feb` |
+| **danger** | Danger Zone | `danger` | amber `#9e6a03` |
+| **downstream** | Blast-radius dependent | `downstream` | gray `#21262d` |
+
+- Prefer `classDef` + `class`; pair with a short text legend.
+- Presentation only — never invent topology.
+- Seed wins over danger when a path is both.
+- Canonical global wording: private `cursor-rules` → `rules/mermaid-role-colors.mdc`.
+- Product emitter: `src/focus/hud/mermaid.py`.

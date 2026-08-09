@@ -55,11 +55,19 @@ def test_routes_pass_through(glass_box_path: Path):
 
 
 def test_mermaid_contains_seed_and_legend(glass_box_path: Path):
-    _, hud = _hud_for(glass_box_path, "auth_utils.py")
-    assert "auth_utils.py" in (hud.mermaid or "")
-    assert "change flows to" in (hud.mermaid or "")
+    graph, hud = _hud_for(glass_box_path, "auth_utils.py")
+    mermaid = hud.mermaid or ""
+    assert "auth_utils.py" in mermaid
+    assert "change flows to" in mermaid
+    # Role colors are presentation only (classDef) — topology unchanged.
+    assert "classDef seed" in mermaid
+    assert "classDef danger" in mermaid
+    assert "classDef downstream" in mermaid
+    assert "class " in mermaid and " seed" in mermaid
+    assert validate_mermaid_edges(graph, mermaid) == []
     rendered = render_hud(hud)
     assert "each box is a **file**" in rendered
+    assert "blue" in rendered and "Danger Zone" in rendered
 
 
 def test_danger_zone_path_heuristics():

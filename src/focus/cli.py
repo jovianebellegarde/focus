@@ -11,6 +11,7 @@ from typing import Annotated
 import typer
 
 from focus.audit import audit_local, audit_pr, build_explain_context
+from focus.config import load_config
 from focus.graph import build_graph, downstream_rings
 from focus.hud import build_hud, render_hud
 from focus.hud.explain import ExplainContext, explain_symbols
@@ -111,7 +112,8 @@ def trace(
         raise typer.Exit(1)
 
     rings = downstream_rings(graph, target)
-    hud = build_hud(graph, target, rings)
+    domains = load_config(root).domains
+    hud = build_hud(graph, target, rings, domains=domains)
     _emit_hud(hud, out, output_format)
 
 
