@@ -17,12 +17,7 @@ Install from PyPI ([`PUBLISH.md`](PUBLISH.md)):
 pip install focus-hud
 ```
 
-CLI entry point remains `focus`.
-
-> **Honesty:** Surface **C** (inline review) needs a `focus-hud` release that includes
-> `focus.ci.post_review_from_env` (Phase 5). Until that tag is on PyPI, either omit the
-> two JSON/inline steps in the drop-in workflow, install from this repo's `main`, or use
-> this monorepo's workflow (which dogfoods the checkout via `uv sync`).
+CLI entry point remains `focus`. Prefer `focus-hud>=0.5.0` for Surfaces **A** + **C**.
 
 ## Permissions
 

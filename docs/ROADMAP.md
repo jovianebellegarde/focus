@@ -3,17 +3,14 @@
 Living document for project progress. Updated as phases complete.
 
 **Last updated:** August 2026  
-**Current phase:** Phase **6 thin slice in flight** — owner `[domains]` labels in executive summary + Mermaid role colors (seed/danger/downstream). Phase **5 thin** shipped (#41). Phase **4b core complete**; 4c/4d on PyPI 0.4.0. Check-run annotations / per-file headers remain Explore / deferred.
+**Current phase:** Phase **5 + 6 thin shipped** on PyPI **`focus-hud` 0.5.0** (inline PR review comments; `[domains]` summary clause; Mermaid role colors). Phase **4b core complete**. Check-run annotations / per-file headers remain Explore / deferred.
 
-**Shipped to PyPI in `focus-hud` 0.4.0 (extension 0.6.0):**
-- **#32 (Phase 4d)** — class-body constant assigns + Typer `@app.command` / Option help as caption purpose source.
-- **#33 (Phase 4b)** — symbol-proven downstream filter (`src/focus/hud/symbol_filter.py`): blast rings filtered to files that actually import **and** call the changed symbol.
-- **#34 (Phase 4c)** — tighter caption prompt/pack grounding; `prompt_rev=320-ground-v3`; default model stays `qwen2.5-coder:3b`.
-- **#37 (Phase 4b)** — why-this-edge import jump: CodeLens jumps to the import line that proves a blast-radius edge (`ImportEvidence`).
-- **#38 (Phase 4b)** — JSDoc/TSDoc extraction into `Definition.docstring` for JS/TS captions.
-- **#39 (Phase 4b)** — roadmap honesty + ROA-caps guard tests.
+**Shipped to PyPI in `focus-hud` 0.5.0 (extension 0.6.0):**
+- **#41 (Phase 5)** — batched inline PR review comments on changed lines (`focus.ci.post_review_from_env`).
+- **#42 (Phase 6)** — `.focus.toml` `[domains]` → executive summary; Mermaid `classDef` seed/danger/downstream.
+- Prior on 0.4.0: #32–#39 (ledger, symbol filter, captions, why-edge, JSDoc, ROA caps).
 
-> **Honesty:** #32–#39 are on GitHub `main` **and** shipped in `focus-hud` **0.4.0** on PyPI (`pip install "focus-hud>=0.4.0"`). VS Code extension is **0.6.0** — **not** on the Marketplace yet (held); sideload via `./scripts/install-extension.sh`.
+> **Honesty:** Phase 5 + 6 ship in `focus-hud` **0.5.0** (`pip install "focus-hud>=0.5.0"`). Extension **0.6.0** — Marketplace publish in flight / see README.
 
 ---
 
@@ -150,7 +147,7 @@ LLM label pass was **removed from Phase 3** and parked (see below): Focus ships 
 | Gutter hop markers + “why this edge” | Click claim → import evidence | 🔄 gutter + showWhy; **import jump landed** (branch): file CodeLens jumps to the proving `import` line via `ImpactNode.import_evidence` |
 | Inline symbol explanations | Stacked CodeLens `↳` captions on changed defs | ✅ branch |
 | `focus explain --why` | CLI evidence trail (proven vs heuristic) per caption | ✅ branch |
-| Marketplace publish | Easy install for strangers | Pending |
+| Marketplace publish | Easy install for strangers | 🔄 publishing with 0.5.0 release |
 
 ---
 

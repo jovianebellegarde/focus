@@ -1,10 +1,18 @@
 {
   "name": "focus-hud",
-  "private": true,
   "displayName": "Focus",
   "description": "Blast radius you can defend - evidence-only Focus HUD in the editor.",
   "version": "0.6.0",
   "publisher": "j0viane",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jovianebellegarde/focus.git"
+  },
+  "homepage": "https://github.com/jovianebellegarde/focus#readme",
+  "bugs": {
+    "url": "https://github.com/jovianebellegarde/focus/issues"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },

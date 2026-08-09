@@ -5,14 +5,14 @@ CLI and import stay **`focus`**.
 
 ```bash
 pip install focus-hud
-focus version   # → 0.4.0
+focus version   # → 0.5.0
 ```
 
 ## One-time: Trusted Publishing
 
 1. Create the project on [PyPI](https://pypi.org/manage/account/) (or let the first publish create it).
 2. Add a Trusted Publisher for GitHub:
-   - Owner: `j0viane`
+   - Owner: `j0viane` / `jovianebellegarde`
    - Repository: `focus`
    - Workflow: `publish.yml`
    - Environment: `pypi`
@@ -21,8 +21,8 @@ focus version   # → 0.4.0
 ## Release
 
 ```bash
-git tag v0.4.0
-git push origin v0.4.0
+git tag v0.5.0
+git push origin v0.5.0
 ```
 
 That runs [`.github/workflows/publish.yml`](../.github/workflows/publish.yml), which does two things on a `v*` tag:

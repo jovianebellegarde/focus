@@ -7,10 +7,6 @@
 # Permissions: contents:read (checkout) + pull-requests:write (comment + review).
 # See https://github.com/j0viane/focus/blob/main/docs/PRIVACY.md
 #
-# Note: Surface C needs a focus-hud release that includes
-# `focus.ci.post_review_from_env` (Phase 5). Until that lands on PyPI,
-# either omit the two JSON/inline steps or install from this repo's main.
-
 name: Focus
 
 on:
@@ -37,7 +33,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install Focus
-        run: pip install "focus-hud>=0.4.0"
+        run: pip install "focus-hud>=0.5.0"
 
       - name: Run Focus audit
         env:
@@ -52,7 +48,7 @@ jobs:
           python -c "from pathlib import Path; from focus.ci import post_from_env; print(post_from_env(Path('focus-hud.md')))"
 
       # Surface C — inline ℹ️ captions on changed lines (Files changed tab).
-      # Requires focus-hud>=0.4.0 with github_review; same pull-requests:write scope.
+      # Requires focus-hud>=0.5.0; same pull-requests:write scope.
       - name: Focus audit (JSON for inline)
         env:
           FOCUS_BASE: ${{ github.event.pull_request.base.sha }}
