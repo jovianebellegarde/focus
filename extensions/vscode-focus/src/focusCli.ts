@@ -124,9 +124,8 @@ function parseHudJson(stdout: string): FocusHUD {
 
 export type AuditLocalOptions = {
   /**
-   * When true, LLM captions may run if `focus.llmCaptions` is on.
-   * Autosave / live overlay / quiet refresh must pass false so rails stay fast
-   * even when FOCUS_LLM_ENABLED=true in `.env`.
+   * When true (Audit Local), try Qwen captions via Ollama.
+   * Autosave / live overlay / quiet refresh must pass false (deterministic ℹ️).
    */
   allowLlm?: boolean;
   /**
@@ -147,14 +146,11 @@ export async function auditLocal(
   if (overlayFile) {
     args.push("--overlay-file", overlayFile);
   }
-  // Prefer --llm-captions only when wanted. Do not pass --no-llm-captions:
-  // older focus-hud installs on PATH lack that flag and toast a Typer error.
-  const settingOn = vscode.workspace
-    .getConfiguration("focus")
-    .get<boolean>("llmCaptions", false);
-  const wantLlm = Boolean(options?.allowLlm) && settingOn && !overlayFile;
-  if (wantLlm) {
-    args.push("--llm-captions");
+  // Overlay already disables LLM in the CLI; quiet save needs an explicit skip.
+  const wantLlm = Boolean(options?.allowLlm) && !overlayFile;
+  if (!wantLlm) {
+    args.push("--no-llm-captions");
+  } else {
     for (const rel of options?.llmPaths ?? []) {
       const cleaned = rel.replace(/\\/g, "/").replace(/^\.\//, "");
       if (cleaned) {

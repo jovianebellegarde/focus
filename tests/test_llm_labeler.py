@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from focus.config import FocusConfig
 from focus.llm.pack import (
     CaptionEvidencePack,
     MeasuredSlots,
@@ -236,61 +235,122 @@ def test_prefer_polish_rejects_thin_without_here():
     assert prefer_polish_label("Changes `hash`.", pack) is None
 
 
-def test_resolve_llm_captions_defaults_and_overlay_off(monkeypatch):
-    monkeypatch.delenv("FOCUS_LLM_ENABLED", raising=False)
-    monkeypatch.delenv("FOCUS_LLM_API_KEY", raising=False)
-    monkeypatch.delenv("FOCUS_LLM_BASE_URL", raising=False)
-    monkeypatch.setenv("FOCUS_LLM_PROVIDER", "openai")
-    assert resolve_llm_captions() is False
-    assert resolve_llm_captions(force=True) is False  # openai needs a key
-    monkeypatch.setenv("FOCUS_LLM_API_KEY", "test-key")
-    monkeypatch.setenv("FOCUS_LLM_ENABLED", "true")
-    # ENABLED alone must not turn captions on (IDE autosave safety).
-    assert resolve_llm_captions() is False
-    assert resolve_llm_captions(force=True) is True
+def test_resolve_llm_captions_always_on_except_overlay():
+    assert resolve_llm_captions() is True
+    assert resolve_llm_captions(overlays=None) is True
+    assert resolve_llm_captions(overlays={}) is True
     assert resolve_llm_captions(overlays={"a.py": "x"}) is False
-    assert resolve_llm_captions(config=FocusConfig(llm_captions=True)) is True
-    assert resolve_llm_captions(force=False) is False
 
 
-def test_resolve_llm_captions_ollama_key_optional(monkeypatch):
-    monkeypatch.delenv("FOCUS_LLM_API_KEY", raising=False)
-    monkeypatch.delenv("FOCUS_LLM_ENABLED", raising=False)
-    monkeypatch.setenv("FOCUS_LLM_PROVIDER", "ollama")
-    assert resolve_llm_captions() is False
-    assert resolve_llm_captions(force=True) is True
-    monkeypatch.setenv("FOCUS_LLM_ENABLED", "true")
-    assert resolve_llm_captions() is False
-    assert resolve_llm_captions(overlays={"a.py": "x"}) is False
-    assert resolve_llm_captions(force=False) is False
+def test_gate_llm_respects_focus_test_no_llm(monkeypatch):
+    from focus.llm.settings import gate_llm_for_runtime
+
+    monkeypatch.setenv("FOCUS_TEST_NO_LLM", "1")
+    assert gate_llm_for_runtime(True) is False
+
+
+def test_gate_llm_for_runtime_skips_when_off():
+    from focus.llm.settings import gate_llm_for_runtime
+
+    assert gate_llm_for_runtime(False) is False
+
+
+def test_ensure_ollama_probe_up_short_circuits(monkeypatch, capsys):
+    from focus.llm import ollama_setup
+
+    def _no_confirm(_prompt: str) -> bool:
+        raise AssertionError("confirm should not run when Ollama is up")
+
+    assert (
+        ollama_setup.ensure_ollama_for_captions(
+            probe=lambda **_: True,
+            confirm=_no_confirm,
+        )
+        is True
+    )
+    assert "deterministic" not in capsys.readouterr().err
+
+
+def test_ensure_ollama_down_prints_instructions_no_install(monkeypatch, capsys):
+    from focus.llm import ollama_setup
+
+    monkeypatch.setattr(ollama_setup.platform, "system", lambda: "Linux")
+    ok = ollama_setup.ensure_ollama_for_captions(
+        probe=lambda **_: False,
+        confirm=lambda _p: True,  # would install only on Darwin+brew
+    )
+    err = capsys.readouterr().err
+    assert ok is False
+    assert "ollama.com/install.sh" in err
+    assert "deterministic" in err or "HUD still works" in err
+
+
+def test_ensure_ollama_macos_brew_install_path(monkeypatch, capsys):
+    from focus.llm import ollama_setup
+
+    monkeypatch.setattr(ollama_setup.platform, "system", lambda: "Darwin")
+    monkeypatch.setattr(ollama_setup, "_brew_available", lambda: True)
+    monkeypatch.setattr(ollama_setup, "_ollama_cli", lambda: "/usr/local/bin/ollama")
+
+    calls: list[list[str]] = []
+
+    def _run(cmd: list[str]) -> int:
+        calls.append(cmd)
+        return 0
+
+    # First probe False (down), probes after install True.
+    probes = {"n": 0}
+
+    def _probe(**_kwargs) -> bool:
+        probes["n"] += 1
+        return probes["n"] > 1
+
+    ok = ollama_setup.ensure_ollama_for_captions(
+        probe=_probe,
+        confirm=lambda _p: True,
+        run=_run,
+        sleep=lambda _s: None,
+    )
+    err = capsys.readouterr().err
+    assert ok is True
+    assert ["brew", "install", "ollama"] in calls
+    assert any(cmd[:2] == ["/usr/local/bin/ollama", "pull"] for cmd in calls)
+    assert "Ollama is ready" in err
+
+
+def test_platform_install_instructions_cover_major_oses(monkeypatch):
+    from focus.llm.ollama_setup import platform_install_instructions
+
+    monkeypatch.setattr("focus.llm.ollama_setup.platform.system", lambda: "Darwin")
+    assert "brew install ollama" in platform_install_instructions()
+    monkeypatch.setattr("focus.llm.ollama_setup.platform.system", lambda: "Linux")
+    assert "install.sh" in platform_install_instructions()
+    monkeypatch.setattr("focus.llm.ollama_setup.platform.system", lambda: "Windows")
+    assert "winget" in platform_install_instructions()
 
 
 def test_build_client_ollama_uses_local_base_url():
-    from focus.llm.clients import DEFAULT_OLLAMA_MODEL, OpenAIClient, build_client
+    from focus.llm.clients import DEFAULT_OLLAMA_MODEL, OllamaClient, build_client
     from focus.llm.settings import DEFAULT_OLLAMA_BASE_URL, LlmSettings
 
-    client = build_client(
-        LlmSettings(provider="ollama", enabled=True, api_key=None, model=None, base_url=None)
-    )
-    assert isinstance(client, OpenAIClient)
+    client = build_client(LlmSettings(model=None, base_url=None))
+    assert isinstance(client, OllamaClient)
     assert client.base_url == DEFAULT_OLLAMA_BASE_URL.rstrip("/")
     assert client.model == DEFAULT_OLLAMA_MODEL
-    assert client.api_key == "ollama"
 
     custom = build_client(
         LlmSettings(
-            provider="ollama",
             base_url="http://localhost:11434/v1/",
             model="qwen2.5-coder:7b",
         )
     )
-    assert isinstance(custom, OpenAIClient)
+    assert isinstance(custom, OllamaClient)
     assert custom.base_url == "http://localhost:11434/v1"
     assert custom.model == "qwen2.5-coder:7b"
 
 
-def test_openai_client_posts_to_base_url(monkeypatch):
-    from focus.llm.clients import OpenAIClient
+def test_ollama_client_posts_to_base_url(monkeypatch):
+    from focus.llm.clients import OllamaClient
 
     captured: dict = {}
 
@@ -322,15 +382,14 @@ def test_openai_client_posts_to_base_url(monkeypatch):
             return _FakeResp()
 
     monkeypatch.setattr("focus.llm.clients.httpx.Client", _FakeHttp)
-    client = OpenAIClient(
-        api_key="ollama",
-        model="qwen2.5:7b",
+    client = OllamaClient(
+        model="qwen2.5-coder:3b",
         base_url="http://127.0.0.1:11434/v1",
     )
     out = client.label({"symbol_name": "fn"})
     assert out == "Returns `helper`."
     assert captured["url"] == "http://127.0.0.1:11434/v1/chat/completions"
-    assert captured["json"]["model"] == "qwen2.5:7b"
+    assert captured["json"]["model"] == "qwen2.5-coder:3b"
 
 
 class _FakeClient:

@@ -39,7 +39,7 @@ Focus operates on **source code the user already has access to** — local clone
 
 ## LLM data policy (Phase 4c+)
 
-When evidence-pack caption labeling is enabled (`FOCUS_LLM_ENABLED` / `--llm-captions` / `.focus.toml [llm] captions`):
+When evidence-pack caption labeling runs (CLI audit / Audit Local; never on overlay/autosave):
 
 | Sent to LLM | Never sent |
 |---|---|
@@ -50,15 +50,13 @@ When evidence-pack caption labeling is enabled (`FOCUS_LLM_ENABLED` / `--llm-cap
 
 **Still never invented by the model:** dependency edges, Mermaid nodes, hop counts, or risk tiers.
 
-**Fail-closed label validation:** After the provider returns a caption, Focus keeps the deterministic ℹ️ unless the label clears pack grounding — no hop counts, no wrong risk word, no ``names`` / CamelCase / snake_case entities absent from the pack corpus, and no caller/downstream/depends claims unless implication (or other pack fields) already supports them. See `validate_label` in `src/focus/llm/validate.py`.
+**Fail-closed label validation:** After Qwen returns a caption, Focus keeps the deterministic ℹ️ unless the label clears pack grounding — no hop counts, no wrong risk word, no ``names`` / CamelCase / snake_case entities absent from the pack corpus, and no caller/downstream/depends claims unless implication (or other pack fields) already supports them. See `validate_label` in `src/focus/llm/validate.py`.
 
-**Default:** off. Live-buffer overlay audits never call the labeler (latency + cost).
+**Always on for audit:** CLI `focus audit` and Focus: Audit Local always try local Qwen via Ollama. Live-buffer overlay and autosave audits never call the labeler (latency — hardcoded, not a user setting).
 
-Provider requirements:
+Provider:
 
-- **Ollama (local dogfood):** `FOCUS_LLM_PROVIDER=ollama` — pack stays on-machine; no paid key. Default model `qwen2.5-coder:3b` (fallback `qwen2.5-coder:7b` for quality).
-- Cloud (`openai` / `anthropic`): use API endpoints with **no training** / enterprise privacy terms when analyzing private code
-- Document provider choice in repo README when Action is configured
+- **Qwen via Ollama only** — pack stays on-machine; no cloud API keys. Default model `qwen2.5-coder:3b` (optional `qwen2.5-coder:7b` via `FOCUS_LLM_MODEL`). Ollama is **not shipped inside Focus**; on macOS the CLI may offer a Homebrew install when the daemon is down; Windows/Linux users follow printed install steps. Keep Ollama updated yourself. If Ollama is unreachable, Focus keeps deterministic ℹ️.
 - Abort the call and keep the deterministic caption if secret-like patterns appear in edit lines
 
 ---
@@ -88,11 +86,10 @@ Provider requirements:
 | Never log secret values | Redact patterns: `API_KEY`, `TOKEN`, `PASSWORD`, `SECRET` |
 | `.env.example` placeholders only | No real values in repo |
 | GitHub Action uses `GITHUB_TOKEN` | Minimal permissions; no PAT in workflow logs |
-| User LLM keys in env vars | `FOCUS_LLM_API_KEY` — loaded at runtime, never printed |
 
 ### Pre-flight secret scan (Phase 2+)
 
-Before LLM calls, run a lightweight pattern scan on any string destined for external APIs. If high-entropy secret patterns match, **abort LLM call** and fall back to static labels.
+Before LLM calls, run a lightweight pattern scan on any string destined for the model. If high-entropy secret patterns match, **abort LLM call** and fall back to static labels.
 
 ---
 
@@ -121,7 +118,7 @@ Not required: `administration`, `issues: write`, `actions: write`, org-level sec
 |---|---|
 | Opt in | Install workflow explicitly |
 | Opt out | Remove workflow file |
-| Disable LLM | Config flag `llm_labels: false` |
+| Skip captions for one run | IDE plumbing `--no-llm-captions` (overlay/autosave); not a user product setting |
 | Ignore paths | `.focusignore` (same semantics as `.gitignore`) |
 | Local-only mode | `focus audit --local` — nothing leaves machine |
 

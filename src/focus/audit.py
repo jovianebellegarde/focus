@@ -24,7 +24,7 @@ from focus.hud.symbol_filter import filter_rings_by_symbols
 from focus.ingest import changed_files, changed_source_files
 from focus.ingest.diff import DiffMode
 from focus.ingest.symbols import changed_line_ranges, changed_symbols, touches_only_non_symbols
-from focus.llm.settings import resolve_llm_captions
+from focus.llm.settings import gate_llm_for_runtime, resolve_llm_captions
 from focus.models import (
     ChangedSymbolInfo,
     FocusHUD,
@@ -193,10 +193,10 @@ def run_audit(
     config = load_config(root)
     fan_out = config.fan_out_threshold
     overlays = overlays or {}
-    use_llm = resolve_llm_captions(
-        force=llm_captions,
-        overlays=overlays or None,
-        config=config,
+    use_llm = gate_llm_for_runtime(
+        False
+        if llm_captions is False
+        else resolve_llm_captions(overlays=overlays or None)
     )
     path_filter = llm_paths if use_llm else None
     all_changed = changed_files(root, base, mode=mode)

@@ -1,4 +1,4 @@
-"""Orchestrate pack → provider → validate for every caption when opt-in."""
+"""Orchestrate pack → Ollama → validate for every caption on audit."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import PurePosixPath
 from typing import TYPE_CHECKING
 
-from focus.llm.clients import LabelClient, build_client
+from focus.llm.clients import DEFAULT_OLLAMA_MODEL, LabelClient, build_client
 from focus.llm.pack import (
     build_evidence_pack,
     build_orphan_evidence_pack,
@@ -40,33 +40,19 @@ def label_caption(
     *,
     client: LabelClient | None = None,
 ) -> str | None:
-    """Call the provider and validate. Returns None on any failure."""
+    """Call Ollama and validate. Returns None on any failure."""
     if pack_contains_secrets(pack):
         log.debug("Skipping LLM label: secret-like text in edit lines")
         return None
     settings = load_llm_settings()
     active = client or build_client(settings)
-    if active is None:
-        return None
 
     from focus.llm.cache import get_cached_caption, pack_fingerprint, put_cached_caption
-    from focus.llm.clients import (
-        DEFAULT_ANTHROPIC_MODEL,
-        DEFAULT_OLLAMA_MODEL,
-        DEFAULT_OPENAI_MODEL,
-    )
 
     # Injected clients (tests / custom) skip the shared cache so prior hits
     # cannot mask fail-closed validate behavior.
     use_cache = client is None
-    if settings.model:
-        model = settings.model
-    elif settings.provider == "ollama":
-        model = DEFAULT_OLLAMA_MODEL
-    elif settings.provider == "anthropic":
-        model = DEFAULT_ANTHROPIC_MODEL
-    else:
-        model = DEFAULT_OPENAI_MODEL
+    model = settings.model or DEFAULT_OLLAMA_MODEL
     key = pack_fingerprint(pack, model=model) if use_cache else None
     if key is not None:
         cached = get_cached_caption(key)
@@ -92,7 +78,7 @@ def apply_llm_captions(
     client: LabelClient | None = None,
     path_filter: set[str] | None = None,
 ) -> list[SymbolExplanation]:
-    """Label every non-test symbol caption (opt-in; never on live overlay).
+    """Label every non-test symbol caption (never on live overlay).
 
     When ``path_filter`` is set, only those relative paths are labeled (visible-
     file-first). Fail-closed validate keeps the deterministic caption when
@@ -102,7 +88,7 @@ def apply_llm_captions(
         return []
     settings = load_llm_settings()
     active = client or build_client(settings)
-    workers = 1 if active is None else max(1, min(16, int(settings.concurrency)))
+    workers = max(1, min(16, int(settings.concurrency)))
 
     def _one(explanation: SymbolExplanation) -> SymbolExplanation:
         if path_filter is not None and explanation.symbol.path not in path_filter:
@@ -168,7 +154,7 @@ def _maybe_label_one(
             confidence="heuristic",
             kind="llm_label",
             location=f"{symbol.path}:{symbol.line}",
-            fact="caption labeled from evidence pack (opt-in LLM)",
+            fact="caption labeled from evidence pack (Qwen via Ollama)",
         )
     )
     # Keep hover budget — llm_label is the trust cue when present.
@@ -193,7 +179,7 @@ def apply_llm_line_captions(
     client: LabelClient | None = None,
     path_filter: set[str] | None = None,
 ) -> list[LineExplanation]:
-    """Label every non-test orphan caption (opt-in only).
+    """Label every non-test orphan caption (never on live overlay).
 
     Module-assign orphans include Phase 4d readers/importers when known.
     Other orphans still get a pack from edit lines + deterministic caption.
@@ -204,8 +190,6 @@ def apply_llm_line_captions(
         return []
     settings = load_llm_settings()
     active = client or build_client(settings)
-    if active is None:
-        return line_explanations
     overlay_texts = overlay_texts or {}
 
     def _one(item: LineExplanation) -> LineExplanation:

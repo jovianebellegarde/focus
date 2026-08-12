@@ -21,7 +21,7 @@ Technology choices for Phase 1–3. **Locked at Phase 0 exit** — change only v
 | **Diagrams** | Mermaid `flowchart` | D2, Graphviz | Native GitHub PR render; LLM-friendly |
 | **Testing** | pytest | unittest | Fixture repos, parametrize for trigger tables |
 | **Lint / format** | ruff | black + flake8 | Single tool |
-| **LLM (Phase 4c)** | Provider-agnostic HTTP (`httpx`); OpenAI + Anthropic + Ollama | Labels all ℹ️ from evidence pack when opt-in | Opt-in via env / `.focus.toml` / `--llm-captions`; Ollama = no-key local dogfood |
+| **LLM (Phase 4c)** | Local Ollama HTTP (`httpx`); Qwen only | Labels all audit ℹ️ from evidence pack | Always on for Audit Local / CLI audit; never on overlay/autosave; Ollama not bundled (macOS may Homebrew-install) |
 | **GitHub** | Actions + `GITHUB_TOKEN` | GitHub App | Minimal scope for MVP PR comments |
 
 ---
@@ -42,12 +42,11 @@ Technology choices for Phase 1–3. **Locked at Phase 0 exit** — change only v
 
 | Variable | Required | Phase | Purpose |
 |---|---|---|---|
-| `FOCUS_LLM_API_KEY` | No* | 4c | Opt-in caption labeler (*required for openai/anthropic; optional for ollama) |
-| `FOCUS_LLM_PROVIDER` | No | 4c | `openai` \| `anthropic` \| `ollama` (default `openai`) |
-| `FOCUS_LLM_ENABLED` | No | 4c | Default `false` — also `.focus.toml [llm] captions` |
-| `FOCUS_LLM_MODEL` | No | 4c | Optional model id (ollama default `qwen2.5-coder:3b`) |
-| `FOCUS_LLM_BASE_URL` | No | 4c | OpenAI-compatible base (ollama default `http://127.0.0.1:11434/v1`) |
-| `FOCUS_LLM_CONCURRENCY` | No | 4c | Parallel caption labels (default `4`, max `16`) |
+| `FOCUS_LLM_MODEL` | No | 4c | Ollama model id (default `qwen2.5-coder:3b`) |
+| `FOCUS_LLM_BASE_URL` | No | 4c | OpenAI-compatible Ollama base (default `http://127.0.0.1:11434/v1`) |
+| `FOCUS_LLM_CONCURRENCY` | No | 4c | Parallel caption labels (default `8`, max `16`) |
+| `FOCUS_LLM_SKIP_OLLAMA_INSTALL` | No | 4c | `1` skips interactive Homebrew install offer when Ollama is down |
+| `FOCUS_TEST_NO_LLM` | Tests only | 4c | `1` keeps pytest offline (set in `tests/conftest.py`) |
 | `GITHUB_TOKEN` | Action only | 3 | Provided by Actions runtime |
 
 ---

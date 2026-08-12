@@ -171,9 +171,9 @@ LLM label pass was **removed from Phase 3** and parked (see below): Focus ships 
 | **Auto-refresh on save** | Quiet re-audit after saving a source file; CodeLens/gutters update in place (`focus.autoAuditOnSave`) | ✅ extension 0.5.1 |
 | **SCM Working Tree CodeLens** | Same risk rail + ℹ️ on the **modified** side of local side-by-side diffs (`diffEditor.codeLens`) and the open file (`editor.codeLens`) | ✅ |
 | **Edit-shaped captions** | Deterministic ℹ️ from the edit: blank counts, imports, calls, returns, assigns — not static slogans | ✅ focus-hud 0.3.2 / extension 0.5.2 |
-| **Expression-slot captions** | Return/assign ℹ️ include a clipped expression when readable; weak/`None`/code-soup yield to purpose; opt-in LLM may polish from the pack | ✅ focus-hud 0.3.3 + 4c/4d |
+| **Expression-slot captions** | Return/assign ℹ️ include a clipped expression when readable; weak/`None`/code-soup yield to purpose; Qwen may polish from the pack on audit | ✅ focus-hud 0.3.3 + 4c/4d |
 | **Live-as-you-type** | Debounced refresh from the **unsaved buffer** (not only disk/git) — `--overlay-file` + `focus.liveBufferOverlay` | ✅ focus-hud 0.3.3 / extension 0.5.3 |
-| **Evidence-pack LLM captions** | Opt-in labeler for **all** ℹ️ (incl. blank-line); pack-constrained; never invents edges; never on live overlay | ✅ focus-hud 0.3.5 / extension 0.5.4 |
+| **Evidence-pack LLM captions** | Qwen via Ollama for **all** audit ℹ️ (incl. blank-line); pack-constrained; never invents edges; never on live overlay | ✅ focus-hud 0.3.5+ / extension 0.5.4+ |
 
 **Pinned UX (IDE):** Rails and ℹ️ refresh while editing via buffer overlay (`focus.liveBufferOverlay`, default on). Save→auto-audit remains as a disk sync. Marketplace polish can follow once this feels instant in dogfood.
 
@@ -185,30 +185,24 @@ LLM label pass was **removed from Phase 3** and parked (see below): Focus ships 
 
 ---
 
-## Phase 4c — Evidence-pack caption labeler *(shipped opt-in)*
+## Phase 4c — Evidence-pack caption labeler *(Qwen via Ollama)*
 
-**Goal:** When caption labeling is opt-in, an LLM may **relabel every ℹ️ from a `CaptionEvidencePack`** Focus already built — including blank-line captions — never invent topology. Fail-closed validate keeps the deterministic caption on reject.
+**Goal:** On CLI audit / Audit Local, Qwen **relabels every ℹ️ from a `CaptionEvidencePack`** Focus already built — including blank-line captions — never invent topology. Fail-closed validate keeps the deterministic caption on reject. Overlay / autosave stay deterministic (hardcoded).
 
-| Knob | Default |
+| Behavior | Detail |
 |---|---|
-| `FOCUS_LLM_ENABLED` / `.focus.toml [llm] captions` | off |
-| `FOCUS_LLM_PROVIDER` | `openai` (cloud) or **`ollama`** (no-key local dogfood) |
-| `focus audit --llm-captions` | dogfood / CI force-on for one run |
-| Extension `focus.llmCaptions` | false (explicit **Audit Local**: wait for open-file LLM before first paint, then label remaining files in background — never autosave / overlay) |
+| Audit Local / `focus audit` | Always try `qwen2.5-coder:3b` via local Ollama |
+| Overlay / autosave | Deterministic ℹ️ only (not a user setting) |
+| Ollama down | Fail-closed + install hint; HUD still works |
+| Cloud providers / off-switches | Removed |
 
-**Dogfood checklist (all captions when enabled, before leaving on by default):**
+**Dogfood checklist:**
 
-1. Unit grounding tests green (`tests/test_llm_labeler.py`).
-2. **Preferred no-key path:** install [Ollama](https://ollama.com), `ollama pull qwen2.5-coder:3b`, local `.env` (never commit):
-   ```
-   FOCUS_LLM_ENABLED=true
-   FOCUS_LLM_PROVIDER=ollama
-   FOCUS_LLM_MODEL=qwen2.5-coder:3b
-   ```
-   Quality fallback: `qwen2.5-coder:7b`. Or cloud: `FOCUS_LLM_API_KEY` + `openai`/`anthropic`. Keep default off in committed configs.
-3. One run: `focus audit --local --llm-captions` (no overlay). Every changed-symbol caption is a candidate; expect more LLM calls / latency than weak-only.
+1. Unit grounding tests green (`tests/test_llm_labeler.py`; CI uses `FOCUS_TEST_NO_LLM`).
+2. Local Ollama (not bundled): install + `ollama pull qwen2.5-coder:3b`. Optional quality fallback: `FOCUS_LLM_MODEL=qwen2.5-coder:7b`.
+3. One run: `focus audit --local` (no overlay). Every changed-symbol caption is a candidate.
 4. For each caption that gained `llm_label` evidence, score: invent entity? invent behavior not in pack? better than silence/deterministic?
-5. Accept only if **zero** topology invent and no ungrounded scope/entity slips past validate; otherwise leave default off.
+5. Accept only if **zero** topology invent and no ungrounded scope/entity slips past validate.
 
 **Bake-off (3b vs 7b, evidence-only):** keep default `qwen2.5-coder:3b`; compare with `FOCUS_LLM_MODEL=qwen2.5-coder:7b` on the same diff. Clear caption cache between runs (`python -c "from focus.llm.cache import clear_caption_cache; clear_caption_cache(disk=True)"`). Prompt revision is fingerprinted (`320-ground-v3` as of caption-quality workstream).
 
@@ -216,7 +210,7 @@ LLM label pass was **removed from Phase 3** and parked (see below): Focus ships 
 
 ## Phase 4d — Portable fact ledger for captions *(thin slice shipped)*
 
-**Status:** Thin slice **on main** (2026-07 — #29 / related) — module-level assign + same-file readers + importers → template orphan captions; packs carry `readers` / `importers` / `reader_doc` for opt-in LLM polish. Kill-or-keep PASS on Focus + stranger fixture. **Class-body assigns + Typer `@app.command` help heuristic shipped** (`feat/ledger-heuristics`). JSDoc/TSDoc extraction shipped (#38).
+**Status:** Thin slice **on main** (2026-07 — #29 / related) — module-level assign + same-file readers + importers → template orphan captions; packs carry `readers` / `importers` / `reader_doc` for Qwen polish on audit. Kill-or-keep PASS on Focus + stranger fixture. **Class-body assigns + Typer `@app.command` help heuristic shipped** (`feat/ledger-heuristics`). JSDoc/TSDoc extraction shipped (#38).
 
 **Problem dogfood surfaced:** Measured ℹ️ often names *edit shape* (`Updates \`weak_hit\` here.`, orphan “outside a function”) without *scope* (what changed in the target code, who uses it). An LLM can invent fluent scope; Focus must not. CEOs’ “AI replaces judgment” narrative does not license ungrounded captions.
 
@@ -227,7 +221,7 @@ LLM label pass was **removed from Phase 3** and parked (see below): Focus ships 
 1. **Generic edit facts** — ~~module-level assign + clipped RHS + same-file readers~~ *(done in `src/focus/hud/edit_facts.py`)*; ~~class-body assigns~~ *(done)*; more edit shapes later.
 2. **Attach who** — ~~importers from `facts_by_path`~~ *(done for module names)*; expand as needed.
 3. **Template captions** from those facts *(done for orphan module assigns)*.
-4. **Opt-in LLM labeler** — orphan packs carry readers/importers/reader_doc; sweet-spot polish + 320-char budget (#30); still **never on live overlay**; Audit Local waits for open-file labels when enabled.
+4. **Qwen labeler on audit** — orphan packs carry readers/importers/reader_doc; sweet-spot polish + 320-char budget (#30); still **never on live overlay**; Audit Local waits for open-file labels.
 5. **First-class `EditFact` / `UseFact` / `ImpactFact` models** if the pack gets messy (defer).
 
 **Success check:** On any repo, a module-level constant edit reads as defendable scope — not “Edited outside a changed function…” and not insider product jokes. *(Ledger thin slice verified: Focus `_WEAK_MARKERS` → `is_weak_caption` and stranger `RETRY_LIMIT` → `charge`.)*
@@ -284,7 +278,7 @@ Full ethics list: [`docs/ETHICS.md`](ETHICS.md)
 
 ## Parking lot — future ideas (unscoped, not promised)
 
-- **Evidence-pack caption labeler (Phase 4c):** shipped opt-in in focus-hud 0.3.5 — labels all ℹ️ from capped edit packs when enabled; never invents edges. Free-form / topology LLM remains parked.
+- **Evidence-pack caption labeler (Phase 4c):** Qwen via Ollama on audit — labels all ℹ️ from capped edit packs; never invents edges. Free-form / topology LLM remains parked.
 - **IDE extension (Phase 4 — deepen C):** symbol-level CodeLens, gutter hop colors, always-on watch, auditable “why this edge” deep links.
 - **GitHub inline diff (Phase 5):** thin slice shipped — batched review comments on changed lines; check-run annotations + per-file headers still parking-lot.
 - **More languages (Go / Rust / Java):** adoption breadth only — not the differentiator. Revisit when a real user is blocked without them.

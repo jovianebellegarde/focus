@@ -349,13 +349,9 @@ async function runAudit(
           fs.writeFileSync(overlayPath, JSON.stringify(payload), "utf8");
         }
       }
-      const settingOn = vscode.workspace
-        .getConfiguration("focus")
-        .get<boolean>("llmCaptions", false);
-      // Option A: Audit Local waits for LLM on the open file before first paint
+      // Audit Local: wait for Qwen captions on the open file before first paint
       // (no short deterministic flash). Save/overlay stay deterministic-only.
-      const wantLlmAuditLocal =
-        !quiet && !withOverlay && settingOn && !overlayPath;
+      const wantLlmAuditLocal = !quiet && !withOverlay && !overlayPath;
 
       if (wantLlmAuditLocal) {
         const activeRel = activeEditorRelPath(root);

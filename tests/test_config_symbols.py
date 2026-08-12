@@ -16,12 +16,21 @@ def _git(root: Path, *args: str) -> None:
 
 
 def test_load_config_defaults(tmp_path: Path):
-    assert load_config(tmp_path).fan_out_threshold == 3
+    cfg = load_config(tmp_path)
+    assert cfg.fan_out_threshold == 3
+    assert cfg.domains == {}
 
 
 def test_load_config_override(tmp_path: Path):
     (tmp_path / ".focus.toml").write_text("[focus]\nfan_out_threshold = 5\n")
     assert load_config(tmp_path).fan_out_threshold == 5
+
+
+def test_load_config_ignores_legacy_llm_section(tmp_path: Path):
+    (tmp_path / ".focus.toml").write_text("[llm]\ncaptions = false\n")
+    cfg = load_config(tmp_path)
+    assert cfg.fan_out_threshold == 3
+    assert not hasattr(cfg, "llm_captions")
 
 
 def test_fan_out_threshold_from_config(glass_box_path: Path, tmp_path: Path):

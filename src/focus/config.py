@@ -18,8 +18,6 @@ class FocusConfig:
     """Runtime knobs that teams can tune without code changes."""
 
     fan_out_threshold: int = DEFAULT_FAN_OUT_THRESHOLD
-    # Opt-in evidence-pack caption labeler (also requires FOCUS_LLM_* / API key).
-    llm_captions: bool = False
     # Owner-declared path → domain label for Phase 6 summary framing.
     # Insertion order = match precedence (first glob wins).
     domains: dict[str, str] = field(default_factory=dict)
@@ -40,21 +38,9 @@ def load_config(root: Path) -> FocusConfig:
     if value < 1:
         value = DEFAULT_FAN_OUT_THRESHOLD
 
-    llm_section = data.get("llm", {})
-    captions = False
-    if isinstance(llm_section, dict):
-        raw = llm_section.get("captions", False)
-        captions = bool(raw) if not isinstance(raw, str) else raw.lower() in {
-            "1",
-            "true",
-            "yes",
-            "on",
-        }
-
     domains = _parse_domains(data.get("domains"))
     return FocusConfig(
         fan_out_threshold=value,
-        llm_captions=captions,
         domains=domains,
     )
 
