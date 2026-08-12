@@ -1,15 +1,15 @@
-"""FOCUS_LLM_* environment knobs (opt-in, default off)."""
+"""FOCUS_LLM_* environment knobs for local Qwen captions via Ollama."""
 
 from __future__ import annotations
 
-from typing import Literal
+import os
 
+import httpx
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from focus.config import FocusConfig
-
 DEFAULT_OLLAMA_BASE_URL = "http://127.0.0.1:11434/v1"
+DEFAULT_OLLAMA_MODEL_HINT = "qwen2.5-coder:3b"
 
 
 class LlmSettings(BaseSettings):
@@ -22,16 +22,13 @@ class LlmSettings(BaseSettings):
         extra="ignore",
     )
 
-    enabled: bool = False
-    provider: Literal["openai", "anthropic", "ollama"] = "openai"
-    api_key: str | None = None
     model: str | None = Field(
         default=None,
-        description="Optional model id; provider default when unset.",
+        description="Ollama model id; default qwen2.5-coder:3b when unset.",
     )
     base_url: str | None = Field(
         default=None,
-        description="OpenAI-compatible base URL (Ollama default when provider=ollama).",
+        description="OpenAI-compatible Ollama base (default http://127.0.0.1:11434/v1).",
     )
     concurrency: int = Field(
         default=8,
@@ -45,29 +42,56 @@ def load_llm_settings() -> LlmSettings:
     return LlmSettings()
 
 
+def ollama_tags_url(base_url: str | None = None) -> str:
+    """Native Ollama tags endpoint from an OpenAI-compatible ``/v1`` base."""
+    base = (base_url or DEFAULT_OLLAMA_BASE_URL).rstrip("/")
+    if base.endswith("/v1"):
+        base = base[:-3].rstrip("/")
+    return f"{base}/api/tags"
+
+
+def probe_ollama(*, base_url: str | None = None, timeout: float = 1.0) -> bool:
+    """True when the local Ollama daemon answers (soft check; not version-gated)."""
+    try:
+        with httpx.Client(timeout=timeout) as client:
+            resp = client.get(ollama_tags_url(base_url))
+            return resp.status_code < 500
+    except Exception:  # noqa: BLE001 — unreachable is an expected dogfood case
+        return False
+
+
+def gate_llm_for_runtime(use_llm: bool) -> bool:
+    """Require a reachable Ollama daemon when captions should run.
+
+    When Ollama is down, prints OS install instructions and may offer a
+    Homebrew install on macOS (see ``focus.llm.ollama_setup``). Returns False
+    so the audit keeps deterministic ℹ️ when setup does not succeed.
+
+    ``FOCUS_TEST_NO_LLM=1`` (set in pytest) skips the daemon so unit tests
+    stay offline.
+    """
+    if not use_llm:
+        return False
+    if os.environ.get("FOCUS_TEST_NO_LLM", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }:
+        return False
+    from focus.llm.ollama_setup import ensure_ollama_for_captions
+
+    return ensure_ollama_for_captions()
+
+
 def resolve_llm_captions(
     *,
-    force: bool | None = None,
     overlays: dict[str, str] | None = None,
-    config: FocusConfig | None = None,
 ) -> bool:
     """Whether this audit may call the caption labeler.
 
-    Live overlays always skip. Opt-in for a run via ``--llm-captions`` /
-    ``force=True``, or ``.focus.toml [llm] captions``.
-
-    ``FOCUS_LLM_ENABLED`` alone does **not** turn captions on (that hung IDE
-    autosave when paired with an older CLI that lacked ``--no-llm-captions``).
-    Use ``--llm-captions`` or the extension ``focus.llmCaptions`` setting.
+    Always on for CLI audit / Audit Local. Live overlays always skip
+    (latency — not a user setting).
     """
     if overlays:
         return False
-    if force is False:
-        return False
-    settings = load_llm_settings()
-    if settings.provider != "ollama" and not (settings.api_key or "").strip():
-        return False
-    cfg = config or FocusConfig()
-    if force is True:
-        return True
-    return bool(cfg.llm_captions)
+    return True

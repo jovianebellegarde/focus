@@ -152,18 +152,12 @@ def audit(
             help="JSON map of repo-relative paths → unsaved buffer text (IDE live overlay).",
         ),
     ] = None,
-    llm_captions: Annotated[
-        bool,
-        typer.Option(
-            "--llm-captions",
-            help="Force on: evidence-pack LLM captions for all ℹ️ (ollama needs no key; openai/anthropic need FOCUS_LLM_API_KEY).",
-        ),
-    ] = False,
     no_llm_captions: Annotated[
         bool,
         typer.Option(
             "--no-llm-captions",
-            help="Force off: skip LLM even if FOCUS_LLM_ENABLED / .focus.toml captions is on (IDE autosave / overlay).",
+            help="Skip Qwen captions (IDE autosave / live overlay — deterministic ℹ️ only).",
+            hidden=True,
         ),
     ] = False,
     llm_path: Annotated[
@@ -171,9 +165,10 @@ def audit(
         typer.Option(
             "--llm-path",
             help=(
-                "With --llm-captions: only label captions in these repo-relative paths "
+                "Only label captions in these repo-relative paths "
                 "(visible-file-first). Repeatable. Omit to label all non-test captions."
             ),
+            hidden=True,
         ),
     ] = None,
 ) -> None:
@@ -190,20 +185,11 @@ def audit(
         if not local:
             typer.echo("--overlay-file requires --local")
             raise typer.Exit(1)
-    if llm_captions and no_llm_captions:
-        typer.echo("Use only one of --llm-captions / --no-llm-captions")
-        raise typer.Exit(1)
     path_filter: set[str] | None = None
     if llm_path:
         path_filter = {p.replace("\\", "/").lstrip("./") for p in llm_path if p.strip()}
     try:
-        force_llm: bool | None
-        if llm_captions:
-            force_llm = True
-        elif no_llm_captions:
-            force_llm = False
-        else:
-            force_llm = None
+        force_llm = False if no_llm_captions else None
         hud = (
             audit_local(
                 path,

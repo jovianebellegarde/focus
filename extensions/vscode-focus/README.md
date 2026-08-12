@@ -36,7 +36,7 @@ cd ../..
 - **Focus: Why This Edge (jump to proving import)** — from the file CodeLens on a blast-radius file, jump the editor to the exact `import` line that proves the dependency edge (evidence, never inferred). On the changed file it lists every dependent's import; on a direct dependent it opens that file's own import line. Transitive (2+ hop) files have no single proving line and fall back to the reason text.
 - **Focus: Refresh** — re-run audit for CodeLens + gutter
 
-**Default dogfood loop:** edit a real line — ℹ️ updates live from the unsaved buffer (`focus.liveBufferOverlay`). **Save** still syncs disk (`focus.autoAuditOnSave`). Use Audit Local when you want the HUD panel or a forced refresh.
+**Default dogfood loop:** edit a real line — ℹ️ updates live from the unsaved buffer (`focus.liveBufferOverlay`). **Save** still syncs disk (`focus.autoAuditOnSave`). Use **Audit Local** when you want the HUD panel and Qwen-polished ℹ️ (`qwen2.5-coder:3b` via Ollama — not bundled; fail-closed to deterministic if Ollama is down). Overlay / autosave stay deterministic only.
 
 **Where ℹ️ show:** the **open file** and the SCM **Working Tree** modified (right) pane — Focus enables both `editor.codeLens` and `diffEditor.codeLens`. Left/base diff pane stays quiet.
 
@@ -91,6 +91,5 @@ Toggle gutter: `focus.gutter`. Toggle inline explainers: `focus.inlineExplanatio
 | `focus.gutter` | Gutter + line highlights (default `true`) |
 | `focus.inlineExplanations` | ℹ️ purpose rows on edit blocks (default `true`) |
 | `focus.autoAuditOnSave` | After Save, quietly re-audit and refresh CodeLens (default `true`) |
-| `focus.liveBufferOverlay` | While editing (dirty buffer), quietly re-audit via overlay — no Save needed (default `true`) |
-| `focus.llmCaptions` | Opt-in: on **Focus: Audit Local**, wait for LLM on the **open file** before painting (no short flash), then label the rest in the background (pack-hash cache + parallel; never autosave / overlay). Needs `FOCUS_LLM_API_KEY` or `FOCUS_LLM_PROVIDER=ollama` (default `qwen2.5-coder:3b`). |
+| `focus.liveBufferOverlay` | While editing (dirty buffer), quietly re-audit via overlay — no Save needed (default `true`). Overlay / autosave stay deterministic ℹ️ (no Qwen). |
 | `focus.lensFontSize` | CodeLens size: `0` = editor default, `-1` = match `editor.fontSize` |

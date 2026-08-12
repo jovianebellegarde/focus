@@ -98,11 +98,6 @@
           "type": "boolean",
           "default": true,
           "description": "While you edit (even before Save), quietly re-audit using the unsaved buffer so CodeLens tracks what you see."
-        },
-        "focus.llmCaptions": {
-          "type": "boolean",
-          "default": false,
-          "description": "Opt-in: on Focus: Audit Local, wait for LLM captions on the open file before painting (no short deterministic flash), then label the rest in the background. Never on autosave / overlay. Needs FOCUS_LLM_API_KEY for openai/anthropic, or FOCUS_LLM_PROVIDER=ollama (default model qwen2.5-coder:3b)."
         }
       }
     }

@@ -11,10 +11,13 @@ Resolved open questions from ethics, privacy, and planning reviews.
 | Question | Decision | Rationale |
 |---|---|---|
 | Default HUD caveat for partial static analysis | Use frozen text in [`HUD.md`](HUD.md) Block 4; append detected blindspots | Honest without alarming on every PR |
-| LLM caption labeler (evidence pack) | **Shipped opt-in (Phase 4c / 0.3.5)** | Labels **all** ℹ️ when enabled (incl. blank-line); never invents topology; fail-closed validate. See [`PRIVACY.md`](PRIVACY.md) |
+| LLM caption labeler (evidence pack) | **Qwen via Ollama for audit (Phase 4c+)** | Labels **all** ℹ️ on CLI audit / Audit Local; never invents topology; fail-closed validate. Overlay excluded. See [`PRIVACY.md`](PRIVACY.md) |
 | LLM pack payload vs engineering rule 11 | **Capped edit lines + measured slots** (never full files / never full graph) | Aligns product with PRIVACY; topology stays deterministic |
 | Grounded caption validate before enable | **Fail-closed `validate_label`** | Reject hops, wrong risk, ungrounded identifiers/scope claims; keep deterministic on reject |
-| No-key caption dogfood provider | **Ollama** (OpenAI-compatible localhost; default `qwen2.5-coder:3b`, fallback `qwen2.5-coder:7b`) | Free local try; 3B for detail+latency on many short captions; 7B if meaning feels shallow |
+| Caption model | **`qwen2.5-coder:3b` via Ollama** (optional `qwen2.5-coder:7b`) | Local only; no OpenAI/Anthropic path |
+| Cloud caption providers | **Removed** | Product is Qwen-only; fail-closed when Ollama is down |
+| Captions user off-switch | **Removed** | Always try Qwen on audit; overlay/autosave stay hardcoded LLM-off |
+| How Ollama gets on the machine | **Helper, not bundled** — macOS may offer Homebrew install; Windows/Linux get printed instructions | Avoid shipping a large binary; user keeps Ollama updated |
 | Caption prompt revision | **`320-ground-v3`** (fingerprinted in cache) | Tighter what/why prompts + `grounding` pack keys; fail-closed on chatty preamble, >2 sentences, ungrounded scope |
 | Portable caption facts (target repo) | **Thin slice shipped (Phase 4d)** — more shapes deferred | Generic ledger from *target* AST/diff/graph (module assign + readers + importers); never Focus-product lore. See [`ROADMAP.md`](ROADMAP.md) Phase 4d |
 | Fixture repo license | MIT for `tests/fixtures/` (same as Focus) | Clear redistribution for open-source / portfolio adoption |

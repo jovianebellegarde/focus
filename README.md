@@ -100,7 +100,7 @@ Open the **repo git root**, set `focus.path` if needed, **Reload Window** once, 
 
 - **Live while typing** — dirty buffers refresh ℹ️ after a short debounce (`focus.liveBufferOverlay`, default on). No Save required.
 - **Save** still re-audits from disk (`focus.autoAuditOnSave`).
-- **Opt-in LLM ℹ️** — `focus.llmCaptions` (off by default): on **Audit Local**, wait for pack-constrained captions on the **open file** before painting, then label the rest in the background. Never on live overlay. Local dogfood: Ollama + `qwen2.5-coder:3b` (see extension README / [`docs/PRIVACY.md`](docs/PRIVACY.md)).
+- **Qwen ℹ️ (Audit Local / CLI)** — Focus uses Qwen (`qwen2.5-coder:3b`) through Ollama for pack-constrained captions on **Audit Local** and `focus audit`. Never on live overlay / autosave (deterministic ℹ️ only). Topology stays evidence-only (labels only). Ollama is **not bundled**; if it is missing, Focus keeps deterministic ℹ️ (+ install hint). See [`docs/PRIVACY.md`](docs/PRIVACY.md).
 
 Details: [`extensions/vscode-focus/README.md`](extensions/vscode-focus/README.md).
 
@@ -191,7 +191,7 @@ flowchart TB
 | Diagrams | Mermaid (GitHub + IDE webview) |
 | CI | Opt-in GitHub Action — PR comment (A) + inline review comments on changed lines (C, Phase 5 thin) |
 | IDE | VS Code / Cursor — CodeLens + HUD panel (C); extension **0.6.0** ([Marketplace: Focus HUD](https://marketplace.visualstudio.com/items?itemName=jovianebellegarde.focus-hud)) |
-| LLM (opt-in) | Pack-only ℹ️ labels — never invents graph edges; off by default |
+| LLM | Qwen via Ollama for audit ℹ️ — pack-only; never invents graph edges; overlay stays deterministic |
 
 ---
 
@@ -201,10 +201,8 @@ flowchart TB
 |---|---|
 | `focus scan [path]` | Index the repo (Python + JS/TS) |
 | `focus trace [file]` | HUD for one file (`--format json` for tools) |
-| `focus audit --local` | Working tree vs `main` |
+| `focus audit --local` | Working tree vs `main` + Qwen ℹ️ when Ollama is up |
 | `focus audit --base <sha>` | PR / branch range |
-| `focus audit --local --llm-captions` | Opt-in pack-constrained LLM ℹ️ (Ollama or cloud key) |
-| `focus audit --local --llm-captions --llm-path <rel>` | Label the open/visible file first (faster dogfood) |
 | `focus version` | Installed version |
 
 ---
@@ -218,8 +216,7 @@ Phase 3 **complete**. Phase 4 IDE **C** shipping (edit-shaped ℹ️ + live buff
 ## Ethics & privacy
 
 - **Evidence-based** — no LLM inventing edges, nodes, or risk tiers
-- **Privacy-by-design** — respects `.gitignore`; default path sends **no** source to model APIs
-- **Opt-in caption labels only** — when enabled, a capped `CaptionEvidencePack` (not full files / not the full graph); never on live overlay
+- **Privacy-by-design** — respects `.gitignore`; audit captions stay on-machine via local Ollama (pack only — not full files / not the full graph); never on live overlay
 - **No surveillance** — structure, not developer identity
 - **Opt-in Action** — minimum token scope
 
