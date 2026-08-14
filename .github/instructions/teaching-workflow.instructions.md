@@ -1,0 +1,1 @@
+../../../copilot-instructions/.github/instructions/teaching-workflow.instructions.md

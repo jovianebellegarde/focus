@@ -1,0 +1,1 @@
+../../../copilot-instructions/.github/instructions/pr-test-plan.instructions.md

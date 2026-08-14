@@ -1,0 +1,1 @@
+../../../copilot-instructions/.github/instructions/publish-safety.instructions.md
