@@ -1,1 +1,0 @@
-../../../copilot-instructions/.github/instructions/agent-verification-gauntlet.instructions.md

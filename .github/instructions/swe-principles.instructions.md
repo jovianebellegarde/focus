@@ -1,1 +1,0 @@
-../../../copilot-instructions/.github/instructions/swe-principles.instructions.md

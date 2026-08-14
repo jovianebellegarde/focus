@@ -1,1 +1,0 @@
-../../../copilot-instructions/.github/instructions/mermaid-role-colors.instructions.md

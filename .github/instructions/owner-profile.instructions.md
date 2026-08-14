@@ -1,1 +1,0 @@
-../../../copilot-instructions/.github/instructions/owner-profile.instructions.md

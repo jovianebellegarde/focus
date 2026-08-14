@@ -1,1 +1,0 @@
-../../../copilot-instructions/.github/instructions/readme-honesty.instructions.md

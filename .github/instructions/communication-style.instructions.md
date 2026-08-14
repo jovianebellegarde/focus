@@ -1,1 +1,0 @@
-../../../copilot-instructions/.github/instructions/communication-style.instructions.md

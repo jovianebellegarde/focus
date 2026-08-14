@@ -1,1 +1,0 @@
-../../../copilot-instructions/.github/instructions/personal-core.instructions.md
