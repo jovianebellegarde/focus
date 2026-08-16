@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Focus — Project status (memory / handoff)
 
-**Last updated:** 2026-08-08 (night) — **Released:** PyPI `focus-hud` **0.5.1** (metadata URLs) + Marketplace **Focus HUD** `jovianebellegarde.focus-hud` **0.6.0**. Phase 5 (#41) + Phase 6 (#42) on main.  
+**Last updated:** 2026-08-12 (evening) — **On main:** Qwen-only audit captions (#44). **Released (unchanged):** PyPI `focus-hud` **0.5.1** + Marketplace **Focus HUD** `jovianebellegarde.focus-hud` **0.6.0**. Phase 5 (#41) + Phase 6 (#42) on main.  
 **Product:** Focus — evidence-only blast-radius HUD. PyPI `focus-hud`, CLI `focus`, IDE `extensions/vscode-focus`.
 
 **Read this first in a new chat.** Update this file when pausing or before switching windows.
@@ -16,21 +16,24 @@ alwaysApply: true
 
 | Item | State |
 |---|---|
-| **Checked-out branch** | `main` |
-| **Open PRs** | **None** |
-| **PyPI** | **`focus-hud` 0.5.1** live |
+| **Checked-out branch** | `main` (`e1d7511` = merge #44) |
+| **Open PRs** | **None** (`feat/ollama-default-provider` deleted after merge) |
+| **PyPI** | **`focus-hud` 0.5.1** live (Qwen-only captions **not** on PyPI yet — next release) |
 | **GitHub Releases** | **`focus-hud 0.5.1` = Latest** |
 | **Extension** | **0.6.0** — Marketplace **Focus HUD** (`jovianebellegarde.focus-hud`) |
 | **Phase 5 / 6** | **Shipped** on PyPI 0.5.0+ |
+| **Captions (main)** | **Qwen via Ollama** (`qwen2.5-coder:3b`) on Audit Local / `focus audit`. No OpenAI/Anthropic, no user off-switch. Overlay + autosave stay hardcoded LLM-off. Ollama down → deterministic ℹ️ + install hint. CodeLens prefix stays `ℹ️`. |
 | **GitHub / Marketplace owner** | **`jovianebellegarde`** |
 
 ### Optional follow-ups
 
-1. Parked Explore: dynamic-import hints; per-file PR headers; check-run annotations
+1. Release PyPI + Marketplace when ready to ship Qwen-only captions to installers (this checkout already has them)
+2. Parked Explore: dynamic-import hints; per-file PR headers; check-run annotations
+3. Parked: LLM on overlay (tiny-model); CodeLens prefix → codicon / no-prefix
 
 ### Standing
 
 - Feature branch + PR unless `ALLOW_MAIN_COMMIT`
 - Dogfood before commit/push; README honesty
-- Git author: `71949760+jovianebellegarde@users.noreply.github.com`
+- Git author: `71949760+jovianebellegarde@users.noreply.github.com` (global; SSH sign). Do **not** set local `You <you@test>`.
 - Mermaid colors: product + `mermaid-role-colors.mdc`
